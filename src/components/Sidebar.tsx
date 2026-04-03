@@ -1,102 +1,129 @@
-import { ActionButton, Divider, Text, Picker, PickerItem } from '@react-spectrum/s2';
-import { style } from '@react-spectrum/s2/style' with { type: 'macro' };
-import Home from '@react-spectrum/s2/icons/Home';
-import Edit from '@react-spectrum/s2/icons/Edit';
-import Cloud from '@react-spectrum/s2/icons/Cloud';
-import ChartTrend from '@react-spectrum/s2/icons/ChartTrend';
-import Apps from '@react-spectrum/s2/icons/Apps';
-import Plugin from '@react-spectrum/s2/icons/Plugin';
-import Settings from '@react-spectrum/s2/icons/Settings';
-import Key from '@react-spectrum/s2/icons/Key';
-import Target from '@react-spectrum/s2/icons/Target';
-import Lock from '@react-spectrum/s2/icons/Lock';
-import GlobeGrid from '@react-spectrum/s2/icons/GlobeGrid';
-import File from '@react-spectrum/s2/icons/File';
-import { iconStyle } from '@react-spectrum/s2/style' with { type: 'macro' };
+import {
+  Provider,
+  defaultTheme,
+  Picker,
+  Item,
+  Section,
+  ListView,
+  Text,
+  Heading,
+  View,
+} from '@adobe/react-spectrum';
+import Home from '@spectrum-icons/workflow/Home';
+import Edit from '@spectrum-icons/workflow/Edit';
+import Cloud from '@spectrum-icons/workflow/Cloud';
+import TrendInspect from '@spectrum-icons/workflow/TrendInspect';
+import Apps from '@spectrum-icons/workflow/Apps';
+import Extension from '@spectrum-icons/workflow/Extension';
+import Settings from '@spectrum-icons/workflow/Settings';
+import Target from '@spectrum-icons/workflow/Target';
+import Key from '@spectrum-icons/workflow/Key';
+import Shield from '@spectrum-icons/workflow/Shield';
+import Globe from '@spectrum-icons/workflow/Globe';
+import Document from '@spectrum-icons/workflow/Document';
 
-const sidebarStyle = style({
-  display: 'flex',
-  flexDirection: 'column',
-  width: 224,
-  height: 'full',
-  paddingY: 8,
-  flexShrink: 0,
-  overflow: 'auto',
-});
-
-const sectionHeaderStyle = style({
-  font: 'body-xs',
-  color: 'neutral-subdued',
-  paddingX: 16,
-  paddingTop: 16,
-  paddingBottom: 4,
-  fontWeight: 'bold',
-});
-
-const iconSize = iconStyle({ size: 'S', color: 'neutral' });
-
-interface SidebarNavItemProps {
-  icon: React.ReactNode;
-  label: string;
-  isActive?: boolean;
-}
-
-function SidebarNavItem({ icon, label, isActive }: SidebarNavItemProps) {
-  return (
-    <ActionButton
-      isQuiet
-      UNSAFE_style={{
-        width: '100%',
-        justifyContent: 'flex-start',
-        borderRadius: 8,
-        ...(isActive ? { backgroundColor: '#e8e8e8' } : {}),
-      }}
-    >
-      {icon}
-      <Text>{label}</Text>
-    </ActionButton>
-  );
-}
+const iconProps = { size: 'S' as const };
 
 export default function Sidebar() {
   return (
-    <nav className={sidebarStyle} style={{ backgroundColor: '#fff', borderRight: '1px solid #e0e0e0' }}>
-      <div className={style({ paddingX: 12, paddingBottom: 8 })}>
-        <Picker
-          aria-label="Select environment"
-          placeholder="Select environment"
-          isQuiet
-          styles={style({ width: 'full' })}
-        >
-          <PickerItem id="env1">Production</PickerItem>
-          <PickerItem id="env2">Staging</PickerItem>
-          <PickerItem id="env3">Development</PickerItem>
-        </Picker>
-      </div>
+    <Provider theme={defaultTheme} colorScheme="dark">
+      <View
+        elementType="nav"
+        width={224}
+        height="100%"
+        minHeight={0}
+        flexShrink={0}
+        overflow="hidden"
+        backgroundColor="gray-100"
+        borderEndWidth="thin"
+        borderEndColor="gray-300"
+      >
+        <View paddingY="size-100" height="100%" minHeight={0} UNSAFE_style={{ display: 'flex', flexDirection: 'column' }}>
+          <View paddingX="size-200" paddingBottom="size-100">
+            <Picker label="Select environment" placeholder="Select environment" isQuiet width="100%">
+              <Item key="env1" textValue="Production">
+                Production
+              </Item>
+              <Item key="env2" textValue="Staging">
+                Staging
+              </Item>
+              <Item key="env3" textValue="Development">
+                Development
+              </Item>
+            </Picker>
+          </View>
 
-      <div className={style({ display: 'flex', flexDirection: 'column', gap: 2, paddingX: 8 })}>
-        <SidebarNavItem icon={<Home styles={iconSize} />} label="Home" isActive />
-        <SidebarNavItem icon={<Edit styles={iconSize} />} label="Universal Editor" />
-        <SidebarNavItem icon={<Cloud styles={iconSize} />} label="Cloud Manager" />
-        <SidebarNavItem icon={<ChartTrend styles={iconSize} />} label="Cloud Acceleration Manager" />
-        <SidebarNavItem icon={<Apps styles={iconSize} />} label="Software Distribution" />
-        <SidebarNavItem icon={<Plugin styles={iconSize} />} label="Extension Manager" />
-      </div>
+          <ListView
+            aria-label="Application navigation"
+            selectionMode="single"
+            defaultSelectedKeys={['home']}
+            density="compact"
+            isQuiet
+            flexGrow={1}
+            minHeight={0}
+            width="100%"
+            overflowMode="truncate"
+          >
+            <Item key="home" textValue="Home">
+              <Home {...iconProps} />
+              <Text>Home</Text>
+            </Item>
+            <Item key="universal-editor" textValue="Universal Editor">
+              <Edit {...iconProps} />
+              <Text>Universal Editor</Text>
+            </Item>
+            <Item key="cloud-manager" textValue="Cloud Manager">
+              <Cloud {...iconProps} />
+              <Text>Cloud Manager</Text>
+            </Item>
+            <Item key="cloud-acceleration-manager" textValue="Cloud Acceleration Manager">
+              <TrendInspect {...iconProps} />
+              <Text>Cloud Acceleration Manager</Text>
+            </Item>
+            <Item key="software-distribution" textValue="Software Distribution">
+              <Apps {...iconProps} />
+              <Text>Software Distribution</Text>
+            </Item>
+            <Item key="extension-manager" textValue="Extension Manager">
+              <Extension {...iconProps} />
+              <Text>Extension Manager</Text>
+            </Item>
 
-      <div className={style({ paddingX: 12, paddingY: 4 })}>
-        <Divider size="S" />
-      </div>
-
-      <div className={sectionHeaderStyle}>Security and Compliance</div>
-
-      <div className={style({ display: 'flex', flexDirection: 'column', gap: 2, paddingX: 8 })}>
-        <SidebarNavItem icon={<Settings styles={iconSize} />} label="Security Health" />
-        <SidebarNavItem icon={<Target styles={iconSize} />} label="Penetration Tests" />
-        <SidebarNavItem icon={<Key styles={iconSize} />} label="Customer Managed Keys" />
-        <SidebarNavItem icon={<Lock styles={iconSize} />} label="Advanced WAF" />
-        <SidebarNavItem icon={<GlobeGrid styles={iconSize} />} label="CDN Traffic" />
-        <SidebarNavItem icon={<File styles={iconSize} />} label="Security Documents" />
-      </div>
-    </nav>
+            <Section
+              title={
+                <Heading level={4} marginTop="size-200" marginBottom="size-50">
+                  Security and Compliance
+                </Heading>
+              }
+            >
+              <Item key="security-health" textValue="Security Health">
+                <Settings {...iconProps} />
+                <Text>Security Health</Text>
+              </Item>
+              <Item key="penetration-tests" textValue="Penetration Tests">
+                <Target {...iconProps} />
+                <Text>Penetration Tests</Text>
+              </Item>
+              <Item key="customer-managed-keys" textValue="Customer Managed Keys">
+                <Key {...iconProps} />
+                <Text>Customer Managed Keys</Text>
+              </Item>
+              <Item key="advanced-waf" textValue="Advanced WAF">
+                <Shield {...iconProps} />
+                <Text>Advanced WAF</Text>
+              </Item>
+              <Item key="cdn-traffic" textValue="CDN Traffic">
+                <Globe {...iconProps} />
+                <Text>CDN Traffic</Text>
+              </Item>
+              <Item key="security-documents" textValue="Security Documents">
+                <Document {...iconProps} />
+                <Text>Security Documents</Text>
+              </Item>
+            </Section>
+          </ListView>
+        </View>
+      </View>
+    </Provider>
   );
 }
