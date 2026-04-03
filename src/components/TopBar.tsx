@@ -31,21 +31,15 @@ const rightActionsStyle = style({
   gap: 4,
 });
 
-function AdobeLogo() {
-  return (
-    <svg width="24" height="20" viewBox="0 0 30 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M11.5 0H0V26L11.5 0Z" fill="#FA0F00" />
-      <path d="M18.5 0H30V26L18.5 0Z" fill="#FA0F00" />
-      <path d="M15 9.6L22.1 26H17.5L15.4 20.8H10L15 9.6Z" fill="#FA0F00" />
-    </svg>
-  );
-}
-
 export default function TopBar() {
   return (
     <header className={topBarStyle} style={{ backgroundColor: '#fff', borderBottom: '1px solid #e0e0e0' }}>
       <div className={logoStyle}>
-        <AdobeLogo />
+        <img
+          src="/adobe-logo.png"
+          alt="Adobe logo"
+          style={{ width: 24, height: 24, borderRadius: 6, flexShrink: 0 }}
+        />
         <Text
           UNSAFE_style={{
             fontSize: 14,
