@@ -1,0 +1,38 @@
+.aem-data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.aem-data-table .react-aria-Column {
+  text-align: start;
+  padding: 8px 12px;
+  font-weight: 600;
+  color: var(--app-text-muted);
+  font-size: 12px;
+  border-bottom: 1px solid var(--app-border-color);
+  white-space: nowrap;
+}
+
+.aem-data-table .react-aria-Row {
+  outline: none;
+  cursor: default;
+}
+
+.aem-data-table .react-aria-Row:hover {
+  background: var(--app-shell-background);
+}
+
+.aem-data-table .react-aria-Row[data-focused] {
+  outline: 2px solid var(--app-accent);
+  outline-offset: -2px;
+  border-radius: 4px;
+}
+
+.aem-data-table .react-aria-Cell {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--app-border-subtle);
+  color: var(--app-text-color);
+  font-size: 13px;
+  vertical-align: middle;
+}

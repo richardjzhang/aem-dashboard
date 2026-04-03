@@ -3,18 +3,23 @@ import { style } from '@react-spectrum/s2/style' with { type: 'macro' };
 import ChevronLeft from '@react-spectrum/s2/icons/ChevronLeft';
 import ChevronRight from '@react-spectrum/s2/icons/ChevronRight';
 import { iconStyle } from '@react-spectrum/s2/style' with { type: 'macro' };
+import { useNavigate } from 'react-router';
 import { announcements } from '../data/mock';
 
 const sectionStyle = style({
   display: 'flex',
   flexDirection: 'column',
   gap: 12,
+  width: 'full',
+  minWidth: 0,
 });
 
 const headerStyle = style({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-between',
+  width: 'full',
+  minWidth: 0,
 });
 
 const headingStyle = style({
@@ -30,12 +35,15 @@ const navStyle = style({
 
 const cardStyle = style({
   display: 'flex',
+  flexDirection: 'row',
+  width: 'full',
+  minWidth: 0,
   borderRadius: 'lg',
   overflow: 'hidden',
 });
 
 const cardImageStyle = style({
-  width: 160,
+  width: 128,
   flexShrink: 0,
   display: 'flex',
   alignItems: 'center',
@@ -47,6 +55,9 @@ const cardContentStyle = style({
   flexDirection: 'column',
   gap: 12,
   padding: 20,
+  flexGrow: 1,
+  flexShrink: 1,
+  minWidth: 0,
 });
 
 const cardTitleStyle = style({
@@ -67,6 +78,7 @@ function AnnouncementIllustration() {
 }
 
 export default function ProductAnnouncements() {
+  const navigate = useNavigate();
   const announcement = announcements[0];
 
   return (
@@ -83,17 +95,17 @@ export default function ProductAnnouncements() {
         </div>
       </div>
 
-      <div className={cardStyle} style={{ backgroundColor: '#fff', border: '1px solid #e0e0e0' }}>
-        <div className={cardImageStyle} style={{ backgroundColor: '#1b1463' }}>
+      <div className={`${cardStyle} app-surface-card`}>
+        <div className={`${cardImageStyle} app-announcement-panel`}>
           <AnnouncementIllustration />
         </div>
         <div className={cardContentStyle}>
           <div className={cardTitleStyle}>{announcement.title}</div>
-          <Text UNSAFE_style={{ fontSize: 13, color: '#6e6e6e', lineHeight: 1.5 }}>
+          <Text UNSAFE_style={{ fontSize: 13, color: 'var(--app-text-muted)', lineHeight: 1.5 }}>
             {announcement.description}
           </Text>
           <div>
-            <Button variant="accent" href={announcement.ctaHref}>
+            <Button variant="accent" onPress={() => navigate(announcement.ctaHref)}>
               {announcement.ctaLabel}
             </Button>
           </div>

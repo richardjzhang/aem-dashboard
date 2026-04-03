@@ -10,12 +10,15 @@ import {
 } from 'react-aria-components';
 import { recentItems } from '../data/mock';
 import type { RecentItem } from '../data/types';
-import './RecentsTable.css';
+import './DataTable.css';
 
 const sectionStyle = style({
   display: 'flex',
   flexDirection: 'column',
   gap: 12,
+  width: 'full',
+  minWidth: 0,
+  alignItems: 'stretch',
 });
 
 const headingStyle = style({
@@ -36,7 +39,7 @@ export default function RecentsTable() {
   return (
     <section className={sectionStyle}>
       <h2 className={headingStyle}>Recents</h2>
-      <Table aria-label="Recent items" className="aem-table">
+      <Table aria-label="Recent items" className="aem-data-table">
         <TableHeader>
           <Column isRowHeader id="name">Name</Column>
           <Column id="type">Type</Column>
