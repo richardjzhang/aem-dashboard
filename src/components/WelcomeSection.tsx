@@ -64,6 +64,7 @@ export default function WelcomeSection() {
           <SearchField
             aria-label="Ask me anything"
             placeholder="Ask me anything..."
+            UNSAFE_className="welcome-search-field"
             styles={style({ width: 'full' })}
           />
         </div>
