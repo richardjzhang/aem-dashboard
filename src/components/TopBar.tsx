@@ -5,11 +5,12 @@ import Bell from '@react-spectrum/s2/icons/Bell';
 import More from '@react-spectrum/s2/icons/More';
 import { iconStyle } from '@react-spectrum/s2/style' with { type: 'macro' };
 
+/** Matches main content horizontal padding in Dashboard. */
 const topBarStyle = style({
   display: 'flex',
   alignItems: 'center',
   height: 48,
-  paddingX: 16,
+  paddingX: 32,
   gap: 12,
   flexShrink: 0,
 });
@@ -56,7 +57,7 @@ export default function TopBar() {
         </Text>
       </div>
 
-      <div className={style({ display: 'flex', alignItems: 'center', gap: 8, paddingStart: 16 })}>
+      <div className={style({ display: 'flex', alignItems: 'center', gap: 8, paddingStart: 8 })}>
         <Text
           UNSAFE_style={{
             fontSize: 13,

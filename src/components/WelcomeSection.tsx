@@ -36,6 +36,12 @@ const searchRowStyle = style({
   maxWidth: 640,
 });
 
+const searchFieldWrapStyle = style({
+  flexGrow: 1,
+  flexShrink: 1,
+  minWidth: 0,
+});
+
 export default function WelcomeSection() {
   return (
     <section className={sectionStyle}>
@@ -54,11 +60,13 @@ export default function WelcomeSection() {
       </div>
 
       <div className={searchRowStyle}>
-        <SearchField
-          aria-label="Ask me anything"
-          placeholder="Ask me anything..."
-          styles={style({ flexGrow: 1 })}
-        />
+        <div className={searchFieldWrapStyle}>
+          <SearchField
+            aria-label="Ask me anything"
+            placeholder="Ask me anything..."
+            styles={style({ width: 'full' })}
+          />
+        </div>
         <Button variant="accent">Submit</Button>
       </div>
     </section>

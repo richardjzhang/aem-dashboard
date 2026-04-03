@@ -21,6 +21,7 @@ const mainColumnStyle = style({
   overflow: 'hidden',
 });
 
+/** Main column gutter; keep in sync with TopBar `paddingX`. */
 const contentAreaStyle = style({
   flexGrow: 1,
   overflow: 'auto',
