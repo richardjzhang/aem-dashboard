@@ -26,7 +26,7 @@ export const announcements: Announcement[] = [
     description:
       'Serving as the central hub for Adobe Experience Manager, the Experience Hub is designed to deliver a personalized experience, letting you navigate the AEM ecosystem seamlessly according to your roles and goals.',
     ctaLabel: 'Learn More',
-    ctaHref: '#',
+    ctaHref: '/announcements/experience-hub',
   },
 ];
 

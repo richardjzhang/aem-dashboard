@@ -8,7 +8,7 @@ import {
   TableHeader,
 } from 'react-aria-components';
 import { authoringEnvironments } from '../data/mock';
-import './AuthoringEnvironments.css';
+import './DataTable.css';
 
 const sectionStyle = style({
   display: 'flex',
@@ -25,7 +25,7 @@ export default function AuthoringEnvironments() {
   return (
     <section className={sectionStyle}>
       <h2 className={headingStyle}>My Authoring Environments</h2>
-      <Table aria-label="Authoring environments" className="aem-env-table">
+      <Table aria-label="Authoring environments" className="aem-data-table">
         <TableHeader>
           <Column isRowHeader id="type">Type</Column>
           <Column id="program">Program / Environment</Column>

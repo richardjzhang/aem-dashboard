@@ -33,12 +33,12 @@ const rightActionsStyle = style({
 
 export default function TopBar() {
   return (
-    <header className={topBarStyle} style={{ backgroundColor: '#fff', borderBottom: '1px solid #e0e0e0' }}>
+    <header className={`${topBarStyle} app-top-bar`}>
       <div className={logoStyle}>
         <img
           src="/adobe-logo.png"
           alt="Adobe logo"
-          style={{ width: 24, height: 24, borderRadius: 6, flexShrink: 0 }}
+          className="app-logo-mark"
         />
         <Text
           UNSAFE_style={{
@@ -55,7 +55,7 @@ export default function TopBar() {
         <Text
           UNSAFE_style={{
             fontSize: 13,
-            color: '#6e6e6e',
+            color: 'var(--app-text-muted)',
             whiteSpace: 'nowrap',
           }}
         >
