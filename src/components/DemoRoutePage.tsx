@@ -1,6 +1,7 @@
 import { Button, Text } from '@react-spectrum/s2';
 import { style } from '@react-spectrum/s2/style' with { type: 'macro' };
 import { useLocation, useNavigate, useParams } from 'react-router';
+import { mutedMeta } from '../styles/mutedCopy';
 import AppShell from './AppShell';
 
 const pageStackStyle = style({
@@ -57,10 +58,8 @@ export default function DemoRoutePage({ sectionLabel, description }: DemoRoutePa
 
         <div className="app-surface-card app-detail-card">
           <Text>{description}</Text>
-          <Text UNSAFE_style={{ color: 'var(--app-text-muted)', lineHeight: 1.5 }}>
-            Route path: {location.pathname}
-          </Text>
-          <Text UNSAFE_style={{ color: 'var(--app-text-muted)', lineHeight: 1.5 }}>
+          <Text UNSAFE_style={mutedMeta}>Route path: {location.pathname}</Text>
+          <Text UNSAFE_style={mutedMeta}>
             The page is intentionally minimal so the interview demo can show believable navigation
             without introducing product-specific business logic.
           </Text>

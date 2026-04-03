@@ -3,6 +3,7 @@ import { style } from '@react-spectrum/s2/style' with { type: 'macro' };
 import ChevronLeft from '@react-spectrum/s2/icons/ChevronLeft';
 import ChevronRight from '@react-spectrum/s2/icons/ChevronRight';
 import { iconStyle } from '@react-spectrum/s2/style' with { type: 'macro' };
+import { mutedBody13Loose } from '../styles/mutedCopy';
 import { useNavigate } from 'react-router';
 import { announcements } from '../data/mock';
 
@@ -101,9 +102,7 @@ export default function ProductAnnouncements() {
         </div>
         <div className={cardContentStyle}>
           <div className={cardTitleStyle}>{announcement.title}</div>
-          <Text UNSAFE_style={{ fontSize: 13, color: 'var(--app-text-muted)', lineHeight: 1.5 }}>
-            {announcement.description}
-          </Text>
+          <Text UNSAFE_style={mutedBody13Loose}>{announcement.description}</Text>
           <div>
             <Button variant="accent" onPress={() => navigate(announcement.ctaHref)}>
               {announcement.ctaLabel}

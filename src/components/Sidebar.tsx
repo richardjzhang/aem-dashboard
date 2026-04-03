@@ -1,44 +1,94 @@
 import {
-  type Key,
-  Provider,
-  defaultTheme,
-  Picker,
-  Item,
-  Section,
-  ListView,
-  Text,
   Heading,
-  View,
-} from '@adobe/react-spectrum';
+  ListView,
+  ListViewItem,
+  Picker,
+  PickerItem,
+  Text,
+} from '@react-spectrum/s2';
+import { style } from '@react-spectrum/s2/style' with { type: 'macro' };
+import { iconStyle } from '@react-spectrum/s2/style' with { type: 'macro' };
+import type { Key } from '@react-types/shared';
 import { useState } from 'react';
-import Home from '@spectrum-icons/workflow/Home';
-import Edit from '@spectrum-icons/workflow/Edit';
-import Cloud from '@spectrum-icons/workflow/Cloud';
-import TrendInspect from '@spectrum-icons/workflow/TrendInspect';
-import Apps from '@spectrum-icons/workflow/Apps';
-import Extension from '@spectrum-icons/workflow/Extension';
-import Settings from '@spectrum-icons/workflow/Settings';
-import Target from '@spectrum-icons/workflow/Target';
-import KeyIcon from '@spectrum-icons/workflow/Key';
-import Shield from '@spectrum-icons/workflow/Shield';
-import Globe from '@spectrum-icons/workflow/Globe';
-import Document from '@spectrum-icons/workflow/Document';
+import { GridListHeader, GridListSection } from 'react-aria-components';
+import Apps from '@react-spectrum/s2/icons/Apps';
+import ChartTrend from '@react-spectrum/s2/icons/ChartTrend';
+import Cloud from '@react-spectrum/s2/icons/Cloud';
+import Edit from '@react-spectrum/s2/icons/Edit';
+import FileText from '@react-spectrum/s2/icons/FileText';
+import GlobeGrid from '@react-spectrum/s2/icons/GlobeGrid';
+import Home from '@react-spectrum/s2/icons/Home';
+import KeyGlyph from '@react-spectrum/s2/icons/Key';
+import Lock from '@react-spectrum/s2/icons/Lock';
+import Plugin from '@react-spectrum/s2/icons/Plugin';
+import Settings from '@react-spectrum/s2/icons/Settings';
+import Target from '@react-spectrum/s2/icons/Target';
 
-const iconProps = { size: 'S' as const };
+const navRootStyle = style({
+  display: 'flex',
+  flexDirection: 'column',
+  width: 224,
+  height: 'full',
+  minHeight: 0,
+  flexShrink: 0,
+  overflow: 'hidden',
+});
+
+const navInnerStyle = style({
+  display: 'flex',
+  flexDirection: 'column',
+  paddingTop: 16,
+  paddingBottom: 12,
+  height: 'full',
+  minHeight: 0,
+  overflow: 'hidden',
+});
+
+const envPickerWrapStyle = style({
+  paddingX: 16,
+  paddingBottom: 16,
+});
+
+const listWrapStyle = style({
+  paddingX: 8,
+  flexGrow: 1,
+  minHeight: 0,
+  display: 'flex',
+  flexDirection: 'column',
+});
+
+const listViewStyle = style({
+  flexGrow: 1,
+  minHeight: 0,
+  width: 'full',
+});
+
+const navItemRowStyle = style({
+  display: 'flex',
+  alignItems: 'center',
+  columnGap: 12,
+  minWidth: 0,
+});
+
+const navLabelStyle = style({
+  color: 'white',
+});
+
+const sectionHeadingStyle = style({
+  font: 'heading-xs',
+  color: 'white',
+  marginTop: 20,
+  marginBottom: 8,
+});
+
+const iconS = iconStyle({ size: 'S', color: 'white' });
 
 function NavItemContent(props: { icon: React.ReactNode; label: string }) {
   return (
-    <View
-      UNSAFE_style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        columnGap: '12px',
-        minWidth: 0,
-      }}
-    >
+    <div className={navItemRowStyle}>
       {props.icon}
-      <Text>{props.label}</Text>
-    </View>
+      <Text styles={navLabelStyle}>{props.label}</Text>
+    </div>
   );
 }
 
@@ -46,125 +96,99 @@ export default function Sidebar() {
   const [environment, setEnvironment] = useState<Key>('env1');
 
   return (
-    <Provider theme={defaultTheme} colorScheme="dark">
-      <View
-        elementType="nav"
-        width={224}
-        height="100%"
-        minHeight={0}
-        flexShrink={0}
-        overflow="hidden"
-        backgroundColor="gray-100"
-        borderEndWidth="thin"
-        borderEndColor="gray-300"
-      >
-        <View
-          paddingTop="size-200"
-          paddingBottom="size-150"
-          height="100%"
-          minHeight={0}
-          overflow="auto"
-          UNSAFE_style={{ display: 'flex', flexDirection: 'column' }}
-        >
-          <View paddingX="size-200" paddingBottom="size-200">
-            <Picker
-              label="Environment"
-              aria-label="Select environment"
-              isQuiet
-              width="100%"
-              selectedKey={environment}
-              onSelectionChange={(key) => {
-                if (key != null) {
-                  setEnvironment(key);
-                }
-              }}
-            >
-              <Item key="env1" textValue="Production">
-                Production
-              </Item>
-              <Item key="env2" textValue="Staging">
-                Staging
-              </Item>
-              <Item key="env3" textValue="Development">
-                Development
-              </Item>
-            </Picker>
-          </View>
+    <nav
+      className={navRootStyle}
+      aria-label="Application"
+      style={{
+        backgroundColor: 'var(--app-panel-background)',
+        borderInlineEnd: '1px solid rgba(255, 255, 255, 0.14)',
+        color: 'rgba(255, 255, 255, 0.92)',
+      }}
+    >
+      <div className={navInnerStyle}>
+        <div className={envPickerWrapStyle}>
+          <Picker
+            label="Environment"
+            aria-label="Select environment"
+            isQuiet
+            size="S"
+            styles={style({ width: 'full' })}
+            selectedKey={environment}
+            onSelectionChange={(key) => {
+              if (key != null) {
+                setEnvironment(key);
+              }
+            }}
+          >
+            <PickerItem id="env1" textValue="Production">
+              Production
+            </PickerItem>
+            <PickerItem id="env2" textValue="Staging">
+              Staging
+            </PickerItem>
+            <PickerItem id="env3" textValue="Development">
+              Development
+            </PickerItem>
+          </Picker>
+        </div>
 
-          <View paddingX="size-100" flexGrow={1} minHeight={0}>
-            <ListView
-              aria-label="Application navigation"
-              selectionMode="single"
-              defaultSelectedKeys={['home']}
-              selectionStyle="highlight"
-              density="compact"
-              isQuiet
-              flexGrow={1}
-              minHeight={0}
-              width="100%"
-              overflowMode="truncate"
-            >
-              <Item key="home" textValue="Home">
-                <NavItemContent icon={<Home {...iconProps} />} label="Home" />
-              </Item>
-              <Item key="universal-editor" textValue="Universal Editor">
-                <NavItemContent icon={<Edit {...iconProps} />} label="Universal Editor" />
-              </Item>
-              <Item key="cloud-manager" textValue="Cloud Manager">
-                <NavItemContent icon={<Cloud {...iconProps} />} label="Cloud Manager" />
-              </Item>
-              <Item key="cloud-acceleration-manager" textValue="Cloud Acceleration Manager">
-                <NavItemContent
-                  icon={<TrendInspect {...iconProps} />}
-                  label="Cloud Acceleration Manager"
-                />
-              </Item>
-              <Item key="software-distribution" textValue="Software Distribution">
-                <NavItemContent
-                  icon={<Apps {...iconProps} />}
-                  label="Software Distribution"
-                />
-              </Item>
-              <Item key="extension-manager" textValue="Extension Manager">
-                <NavItemContent icon={<Extension {...iconProps} />} label="Extension Manager" />
-              </Item>
+        <div className={listWrapStyle}>
+          <ListView
+            aria-label="Application navigation"
+            selectionMode="single"
+            defaultSelectedKeys={['home']}
+            selectionStyle="highlight"
+            isQuiet
+            overflowMode="truncate"
+            styles={listViewStyle}
+          >
+            <ListViewItem id="home" textValue="Home">
+              <NavItemContent icon={<Home styles={iconS} />} label="Home" />
+            </ListViewItem>
+            <ListViewItem id="universal-editor" textValue="Universal Editor">
+              <NavItemContent icon={<Edit styles={iconS} />} label="Universal Editor" />
+            </ListViewItem>
+            <ListViewItem id="cloud-manager" textValue="Cloud Manager">
+              <NavItemContent icon={<Cloud styles={iconS} />} label="Cloud Manager" />
+            </ListViewItem>
+            <ListViewItem id="cloud-acceleration-manager" textValue="Cloud Acceleration Manager">
+              <NavItemContent icon={<ChartTrend styles={iconS} />} label="Cloud Acceleration Manager" />
+            </ListViewItem>
+            <ListViewItem id="software-distribution" textValue="Software Distribution">
+              <NavItemContent icon={<Apps styles={iconS} />} label="Software Distribution" />
+            </ListViewItem>
+            <ListViewItem id="extension-manager" textValue="Extension Manager">
+              <NavItemContent icon={<Plugin styles={iconS} />} label="Extension Manager" />
+            </ListViewItem>
 
-              <Section
-                title={
-                  <Heading level={4} marginTop="size-250" marginBottom="size-75">
-                    Security and Compliance
-                  </Heading>
-                }
-              >
-                <Item key="security-health" textValue="Security Health">
-                  <NavItemContent icon={<Settings {...iconProps} />} label="Security Health" />
-                </Item>
-                <Item key="penetration-tests" textValue="Penetration Tests">
-                  <NavItemContent icon={<Target {...iconProps} />} label="Penetration Tests" />
-                </Item>
-                <Item key="customer-managed-keys" textValue="Customer Managed Keys">
-                  <NavItemContent
-                    icon={<KeyIcon {...iconProps} />}
-                    label="Customer Managed Keys"
-                  />
-                </Item>
-                <Item key="advanced-waf" textValue="Advanced WAF">
-                  <NavItemContent icon={<Shield {...iconProps} />} label="Advanced WAF" />
-                </Item>
-                <Item key="cdn-traffic" textValue="CDN Traffic">
-                  <NavItemContent icon={<Globe {...iconProps} />} label="CDN Traffic" />
-                </Item>
-                <Item key="security-documents" textValue="Security Documents">
-                  <NavItemContent
-                    icon={<Document {...iconProps} />}
-                    label="Security Documents"
-                  />
-                </Item>
-              </Section>
-            </ListView>
-          </View>
-        </View>
-      </View>
-    </Provider>
+            <GridListSection aria-label="Security and Compliance">
+              <GridListHeader>
+                <Heading level={4} styles={sectionHeadingStyle}>
+                  Security and Compliance
+                </Heading>
+              </GridListHeader>
+              <ListViewItem id="security-health" textValue="Security Health">
+                <NavItemContent icon={<Settings styles={iconS} />} label="Security Health" />
+              </ListViewItem>
+              <ListViewItem id="penetration-tests" textValue="Penetration Tests">
+                <NavItemContent icon={<Target styles={iconS} />} label="Penetration Tests" />
+              </ListViewItem>
+              <ListViewItem id="customer-managed-keys" textValue="Customer Managed Keys">
+                <NavItemContent icon={<KeyGlyph styles={iconS} />} label="Customer Managed Keys" />
+              </ListViewItem>
+              <ListViewItem id="advanced-waf" textValue="Advanced WAF">
+                <NavItemContent icon={<Lock styles={iconS} />} label="Advanced WAF" />
+              </ListViewItem>
+              <ListViewItem id="cdn-traffic" textValue="CDN Traffic">
+                <NavItemContent icon={<GlobeGrid styles={iconS} />} label="CDN Traffic" />
+              </ListViewItem>
+              <ListViewItem id="security-documents" textValue="Security Documents">
+                <NavItemContent icon={<FileText styles={iconS} />} label="Security Documents" />
+              </ListViewItem>
+            </GridListSection>
+          </ListView>
+        </div>
+      </div>
+    </nav>
   );
 }

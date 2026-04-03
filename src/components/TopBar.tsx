@@ -4,6 +4,7 @@ import Feedback from '@react-spectrum/s2/icons/Feedback';
 import Bell from '@react-spectrum/s2/icons/Bell';
 import More from '@react-spectrum/s2/icons/More';
 import { iconStyle } from '@react-spectrum/s2/style' with { type: 'macro' };
+import { mutedLabelNowrap } from '../styles/mutedCopy';
 
 /** Matches main content horizontal padding in Dashboard. */
 const topBarStyle = style({
@@ -52,15 +53,7 @@ export default function TopBar() {
       </div>
 
       <div className={style({ display: 'flex', alignItems: 'center', gap: 8, paddingStart: 8 })}>
-        <Text
-          UNSAFE_style={{
-            fontSize: 13,
-            color: 'var(--app-text-muted)',
-            whiteSpace: 'nowrap',
-          }}
-        >
-          Foundation Internal
-        </Text>
+        <Text UNSAFE_style={mutedLabelNowrap}>Foundation Internal</Text>
       </div>
 
       <div className={spacerStyle} />

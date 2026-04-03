@@ -1,0 +1,21 @@
+---
+description: Use React Spectrum 2 (@react-spectrum/s2) for UI components and styling
+globs: "**/*.{tsx,jsx}"
+alwaysApply: false
+---
+
+# Spectrum 2 (S2) UI
+
+- Build UI with **`@react-spectrum/s2`** — import primitives (`Button`, `Text`, `Provider`, `Link`, `SearchField`, etc.), not legacy `@adobe/react-spectrum` (v3).
+- **Styling**: use the `style` / `iconStyle` macros from `@react-spectrum/s2/style` with `{ type: 'macro' }` to match existing components.
+- **Icons**: `@react-spectrum/s2/icons/<Name>` only.
+- **Entry**: keep `@react-spectrum/s2/page.css` imported in the app shell so tokens and base styles apply.
+- **Exceptions**: `react-aria-components` is used in this repo for some patterns (e.g. tables, grid lists). Prefer S2 for visuals and macros; use RAC only where the codebase already does for structure/accessibility, and keep appearance aligned with S2.
+
+```tsx
+// ✅ Prefer
+import { Button, Text } from '@react-spectrum/s2';
+import { style } from '@react-spectrum/s2/style' with { type: 'macro' };
+
+// ❌ Avoid adding new UI from other kits or raw form controls where S2 has an equivalent
+```

@@ -1,0 +1,13 @@
+---
+description: After substantive edits, run lint and production build to verify the change
+alwaysApply: true
+---
+
+# Verify lint and build after changes
+
+After completing non-trivial edits (especially to `src/`, config, or dependencies), run checks locally before considering the task done:
+
+1. **`npm run lint`** — fix ESLint issues introduced or exposed by the change.
+2. **`npm run build`** — ensure TypeScript and Vite production build succeed.
+
+If a change is intentionally tiny (e.g. a one-line comment) and cannot affect compilation, skipping is reasonable; for anything that touches imports, types, or components, run both.
