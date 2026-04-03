@@ -2,6 +2,7 @@
   --lightningcss-light: initial;
   --lightningcss-dark: ;
   color-scheme: light;
+  --app-font-sans: var(--s2-font-family-sans, adobe-clean-spectrum-vf), adobe-clean-variable, adobe-clean, ui-sans-serif, system-ui, sans-serif;
 }
 
 *,
@@ -26,6 +27,7 @@ body {
   align-items: stretch;
   flex-wrap: nowrap;
   min-height: 100%;
+  font-family: var(--app-font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
