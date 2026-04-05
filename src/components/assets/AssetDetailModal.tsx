@@ -141,7 +141,6 @@ export default function AssetDetailModal({ asset, onClose }: AssetDetailModalPro
               </div>
             </>
           )}
-          <div className="app-asset-thumbnail__accent" style={{ backgroundColor: asset.thumbnail.accent }} />
         </div>
 
         <section className={sectionStyle}>

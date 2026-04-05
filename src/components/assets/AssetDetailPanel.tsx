@@ -140,7 +140,6 @@ export default function AssetDetailPanel({ asset, onClose }: AssetDetailPanelPro
             </div>
           </>
         )}
-        <div className="app-asset-thumbnail__accent" style={{ backgroundColor: asset.thumbnail.accent }} />
       </div>
 
       <section className={sectionStyle}>

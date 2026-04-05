@@ -17,7 +17,6 @@ export type AssetRecord = {
   }>;
   thumbnail: {
     title: string;
-    accent: string;
     background: string;
     imageSrc?: string;
   };
@@ -42,7 +41,6 @@ export const assets: AssetRecord[] = [
     ],
     thumbnail: {
       title: 'Summer Hero',
-      accent: '#ffb000',
       background: 'linear-gradient(135deg, #fff4d6 0%, #ffe08a 45%, #ff8f3f 100%)',
       imageSrc: '/assets/hero-banner-summer.png',
     },
@@ -65,7 +63,6 @@ export const assets: AssetRecord[] = [
     ],
     thumbnail: {
       title: 'Product Shot',
-      accent: '#1473e6',
       background: 'linear-gradient(135deg, #e3f2ff 0%, #8ec5ff 50%, #4b7df0 100%)',
     },
   },
@@ -87,7 +84,6 @@ export const assets: AssetRecord[] = [
     ],
     thumbnail: {
       title: 'Instagram Ad',
-      accent: '#d655ff',
       background: 'linear-gradient(135deg, #f7ddff 0%, #f2a1ff 48%, #8f5cff 100%)',
       imageSrc: '/assets/social-ad-instagram.png',
     },
@@ -110,7 +106,6 @@ export const assets: AssetRecord[] = [
     ],
     thumbnail: {
       title: 'Brand Guide',
-      accent: '#e34850',
       background: 'linear-gradient(135deg, #ffe5e8 0%, #ffbfc5 52%, #f45d7e 100%)',
       imageSrc: '/assets/brand-guidelines-2025.png',
     },
@@ -133,7 +128,6 @@ export const assets: AssetRecord[] = [
     ],
     thumbnail: {
       title: 'Email Header',
-      accent: '#ff7b00',
       background: 'linear-gradient(135deg, #fff3de 0%, #ffd59a 48%, #ffab47 100%)',
     },
   },
@@ -155,7 +149,6 @@ export const assets: AssetRecord[] = [
     ],
     thumbnail: {
       title: 'Outdoor Lifestyle',
-      accent: '#0a7d5e',
       background: 'linear-gradient(135deg, #dff8e9 0%, #93deb2 48%, #2d9d78 100%)',
       imageSrc: '/assets/lifestyle-photo-outdoor.png',
     },
@@ -178,7 +171,6 @@ export const assets: AssetRecord[] = [
     ],
     thumbnail: {
       title: 'Demo Video',
-      accent: '#2b6fff',
       background: 'linear-gradient(135deg, #dee9ff 0%, #9abbff 48%, #5a7fff 100%)',
     },
   },
@@ -200,7 +192,6 @@ export const assets: AssetRecord[] = [
     ],
     thumbnail: {
       title: 'Icon Set',
-      accent: '#7d5cff',
       background: 'linear-gradient(135deg, #ece6ff 0%, #c4b4ff 52%, #8f6cec 100%)',
       imageSrc: '/assets/icon-set-v2.png',
     },
@@ -223,7 +214,6 @@ export const assets: AssetRecord[] = [
     ],
     thumbnail: {
       title: 'Annual Report',
-      accent: '#d7373f',
       background: 'linear-gradient(135deg, #ffe1e2 0%, #ffb1b5 50%, #ff6b74 100%)',
     },
   },
@@ -245,7 +235,6 @@ export const assets: AssetRecord[] = [
     ],
     thumbnail: {
       title: 'Holiday Banner',
-      accent: '#ff8f1f',
       background: 'linear-gradient(135deg, #fff0e2 0%, #ffd09a 48%, #ff9d57 100%)',
     },
   },
@@ -267,7 +256,6 @@ export const assets: AssetRecord[] = [
     ],
     thumbnail: {
       title: 'Headshots',
-      accent: '#5c7cfa',
       background: 'linear-gradient(135deg, #e3ebff 0%, #b9caff 48%, #7d94ff 100%)',
       imageSrc: '/assets/team-headshots-collection.png',
     },
@@ -290,7 +278,6 @@ export const assets: AssetRecord[] = [
     ],
     thumbnail: {
       title: 'Generated BG',
-      accent: '#af5cff',
       background: 'linear-gradient(135deg, #f0e3ff 0%, #cfadff 48%, #9d7bff 100%)',
     },
   },

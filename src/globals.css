@@ -156,16 +156,6 @@ main.app-main-content {
   line-height: 1.1;
 }
 
-.app-asset-thumbnail__accent {
-  position: absolute;
-  inset: auto 18px 18px auto;
-  width: 36px;
-  height: 36px;
-  border-radius: 999px;
-  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.18);
-  z-index: 1;
-}
-
 @media (max-width: 1400px) {
   .app-asset-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
