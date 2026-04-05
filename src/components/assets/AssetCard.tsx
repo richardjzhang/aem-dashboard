@@ -47,12 +47,6 @@ const previewStyle = style<{
       list: 220,
     },
   },
-  minHeight: {
-    view: {
-      grid: 184,
-      list: 160,
-    },
-  },
 });
 
 const contentStyle = style({
@@ -101,7 +95,12 @@ export default function AssetCard({ asset, isSelected, view, onSelect }: AssetCa
       aria-pressed={isSelected}
       onClick={() => onSelect(asset)}
     >
-      <div className={`${previewStyle({ view })} app-asset-thumbnail`} style={{ background: asset.thumbnail.background }}>
+      <div
+        className={`${previewStyle({ view })} app-asset-thumbnail ${
+          view === 'grid' ? 'app-asset-thumbnail--card-grid' : 'app-asset-thumbnail--card-list'
+        }`}
+        style={{ background: asset.thumbnail.background }}
+      >
         {hasImage ? (
           <>
             <img
