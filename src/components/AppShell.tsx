@@ -14,15 +14,17 @@ const mainColumnStyle = style({
   flexDirection: 'column',
   flexGrow: 1,
   overflow: 'hidden',
+  minWidth: 0,
 });
 
 const contentAreaStyle = style({
   flexGrow: 1,
   overflow: 'auto',
-  padding: 32,
+  padding: 24,
   display: 'flex',
   flexDirection: 'column',
-  gap: 32,
+  gap: 24,
+  minWidth: 0,
 });
 
 type AppShellProps = {

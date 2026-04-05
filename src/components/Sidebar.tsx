@@ -4,7 +4,6 @@ import {
   defaultTheme,
   Picker,
   Item,
-  Section,
   ListView,
   Text,
   Heading,
@@ -12,17 +11,14 @@ import {
 } from '@adobe/react-spectrum';
 import { useState } from 'react';
 import Home from '@spectrum-icons/workflow/Home';
-import Edit from '@spectrum-icons/workflow/Edit';
-import Cloud from '@spectrum-icons/workflow/Cloud';
-import TrendInspect from '@spectrum-icons/workflow/TrendInspect';
-import Apps from '@spectrum-icons/workflow/Apps';
-import Extension from '@spectrum-icons/workflow/Extension';
-import Settings from '@spectrum-icons/workflow/Settings';
-import Target from '@spectrum-icons/workflow/Target';
-import KeyIcon from '@spectrum-icons/workflow/Key';
-import Shield from '@spectrum-icons/workflow/Shield';
+import Images from '@spectrum-icons/workflow/Images';
+import FolderOpen from '@spectrum-icons/workflow/FolderOpen';
+import GraphTrend from '@spectrum-icons/workflow/GraphTrend';
 import Globe from '@spectrum-icons/workflow/Globe';
-import Document from '@spectrum-icons/workflow/Document';
+import ViewAllTags from '@spectrum-icons/workflow/ViewAllTags';
+import Report from '@spectrum-icons/workflow/Report';
+import Workflow from '@spectrum-icons/workflow/Workflow';
+import UserLock from '@spectrum-icons/workflow/UserLock';
 
 const iconProps = { size: 'S' as const };
 
@@ -43,30 +39,30 @@ function NavItemContent(props: { icon: React.ReactNode; label: string }) {
 }
 
 export default function Sidebar() {
-  const [environment, setEnvironment] = useState<Key>('env1');
+  const [environment, setEnvironment] = useState<Key>('production');
 
   return (
     <Provider theme={defaultTheme} colorScheme="dark">
       <View
         elementType="nav"
-        width={224}
+        width={248}
         height="100%"
         minHeight={0}
         flexShrink={0}
         overflow="hidden"
-        backgroundColor="gray-100"
+        backgroundColor="gray-75"
         borderEndWidth="thin"
-        borderEndColor="gray-300"
+        borderEndColor="gray-200"
       >
         <View
-          paddingTop="size-200"
-          paddingBottom="size-150"
+          paddingTop="size-250"
+          paddingBottom="size-200"
           height="100%"
           minHeight={0}
           overflow="auto"
           UNSAFE_style={{ display: 'flex', flexDirection: 'column' }}
         >
-          <View paddingX="size-200" paddingBottom="size-200">
+          <View paddingX="size-200" paddingBottom="size-250">
             <Picker
               label="Environment"
               aria-label="Select environment"
@@ -79,23 +75,35 @@ export default function Sidebar() {
                 }
               }}
             >
-              <Item key="env1" textValue="Production">
+              <Item key="production" textValue="Production">
                 Production
               </Item>
-              <Item key="env2" textValue="Staging">
-                Staging
+              <Item key="stage" textValue="Stage">
+                Stage
               </Item>
-              <Item key="env3" textValue="Development">
+              <Item key="development" textValue="Development">
                 Development
+              </Item>
+              <Item key="sandbox" textValue="Sandbox">
+                Sandbox
+              </Item>
+              <Item key="preview" textValue="Preview">
+                Preview
+              </Item>
+              <Item key="archive" textValue="Archive">
+                Archive
+              </Item>
+              <Item key="staging" textValue="Staging">
+                Staging
               </Item>
             </Picker>
           </View>
 
-          <View paddingX="size-100" flexGrow={1} minHeight={0}>
+          <View paddingX="size-100" flexGrow={1} minHeight={0} UNSAFE_style={{ display: 'flex', flexDirection: 'column' }}>
             <ListView
               aria-label="Application navigation"
               selectionMode="single"
-              defaultSelectedKeys={['home']}
+              defaultSelectedKeys={['assets']}
               selectionStyle="highlight"
               density="compact"
               isQuiet
@@ -107,60 +115,52 @@ export default function Sidebar() {
               <Item key="home" textValue="Home">
                 <NavItemContent icon={<Home {...iconProps} />} label="Home" />
               </Item>
-              <Item key="universal-editor" textValue="Universal Editor">
-                <NavItemContent icon={<Edit {...iconProps} />} label="Universal Editor" />
+              <Item key="assets" textValue="Assets">
+                <NavItemContent icon={<Images {...iconProps} />} label="Assets" />
               </Item>
-              <Item key="cloud-manager" textValue="Cloud Manager">
-                <NavItemContent icon={<Cloud {...iconProps} />} label="Cloud Manager" />
+              <Item key="collections" textValue="Collections">
+                <NavItemContent icon={<FolderOpen {...iconProps} />} label="Collections" />
               </Item>
-              <Item key="cloud-acceleration-manager" textValue="Cloud Acceleration Manager">
-                <NavItemContent
-                  icon={<TrendInspect {...iconProps} />}
-                  label="Cloud Acceleration Manager"
-                />
+              <Item key="insights" textValue="Insights">
+                <NavItemContent icon={<GraphTrend {...iconProps} />} label="Insights" />
               </Item>
-              <Item key="software-distribution" textValue="Software Distribution">
-                <NavItemContent
-                  icon={<Apps {...iconProps} />}
-                  label="Software Distribution"
-                />
+              <Item key="content-hub" textValue="Content Hub">
+                <NavItemContent icon={<Globe {...iconProps} />} label="Content Hub" />
               </Item>
-              <Item key="extension-manager" textValue="Extension Manager">
-                <NavItemContent icon={<Extension {...iconProps} />} label="Extension Manager" />
-              </Item>
+            </ListView>
 
-              <Section
-                title={
-                  <Heading level={4} marginTop="size-250" marginBottom="size-75">
-                    Security and Compliance
-                  </Heading>
-                }
-              >
-                <Item key="security-health" textValue="Security Health">
-                  <NavItemContent icon={<Settings {...iconProps} />} label="Security Health" />
-                </Item>
-                <Item key="penetration-tests" textValue="Penetration Tests">
-                  <NavItemContent icon={<Target {...iconProps} />} label="Penetration Tests" />
-                </Item>
-                <Item key="customer-managed-keys" textValue="Customer Managed Keys">
-                  <NavItemContent
-                    icon={<KeyIcon {...iconProps} />}
-                    label="Customer Managed Keys"
-                  />
-                </Item>
-                <Item key="advanced-waf" textValue="Advanced WAF">
-                  <NavItemContent icon={<Shield {...iconProps} />} label="Advanced WAF" />
-                </Item>
-                <Item key="cdn-traffic" textValue="CDN Traffic">
-                  <NavItemContent icon={<Globe {...iconProps} />} label="CDN Traffic" />
-                </Item>
-                <Item key="security-documents" textValue="Security Documents">
-                  <NavItemContent
-                    icon={<Document {...iconProps} />}
-                    label="Security Documents"
-                  />
-                </Item>
-              </Section>
+            <View
+              marginTop="size-200"
+              marginBottom="size-150"
+              marginX="size-150"
+              borderTopWidth="thin"
+              borderTopColor="gray-300"
+            />
+
+            <Heading level={4} marginX="size-150" marginBottom="size-75">
+              Admin Tools
+            </Heading>
+
+            <ListView
+              aria-label="Admin tools navigation"
+              selectionMode="none"
+              density="compact"
+              isQuiet
+              width="100%"
+              overflowMode="truncate"
+            >
+              <Item key="metadata-schemas" textValue="Metadata Schemas">
+                <NavItemContent icon={<ViewAllTags {...iconProps} />} label="Metadata Schemas" />
+              </Item>
+              <Item key="reports" textValue="Reports">
+                <NavItemContent icon={<Report {...iconProps} />} label="Reports" />
+              </Item>
+              <Item key="workflows" textValue="Workflows">
+                <NavItemContent icon={<Workflow {...iconProps} />} label="Workflows" />
+              </Item>
+              <Item key="user-permissions" textValue="User Permissions">
+                <NavItemContent icon={<UserLock {...iconProps} />} label="User Permissions" />
+              </Item>
             </ListView>
           </View>
         </View>
