@@ -119,7 +119,6 @@ export default function AssetCard({ asset, isSelected, view, onSelect }: AssetCa
             </div>
           </>
         )}
-        <div className="app-asset-thumbnail__accent" style={{ backgroundColor: asset.thumbnail.accent }} />
       </div>
 
       <div className={contentStyle}>
