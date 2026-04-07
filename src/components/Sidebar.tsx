@@ -6,35 +6,12 @@ import {
   Item,
   ListView,
   Text,
-  Heading,
   View,
 } from '@adobe/react-spectrum';
 import { useState } from 'react';
-import Home from '@spectrum-icons/workflow/Home';
-import Images from '@spectrum-icons/workflow/Images';
-import FolderOpen from '@spectrum-icons/workflow/FolderOpen';
-import GraphTrend from '@spectrum-icons/workflow/GraphTrend';
-import Globe from '@spectrum-icons/workflow/Globe';
-import ViewAllTags from '@spectrum-icons/workflow/ViewAllTags';
-import Report from '@spectrum-icons/workflow/Report';
-import Workflow from '@spectrum-icons/workflow/Workflow';
-import UserLock from '@spectrum-icons/workflow/UserLock';
-
-const iconProps = { size: 'S' as const };
-
-function NavItemContent(props: { icon: React.ReactNode; label: string }) {
+function NavItemContent(props: { label: string }) {
   return (
-    <View
-      UNSAFE_style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        columnGap: '12px',
-        minWidth: 0,
-      }}
-    >
-      {props.icon}
-      <Text>{props.label}</Text>
-    </View>
+    <Text>{props.label}</Text>
   );
 }
 
@@ -113,19 +90,19 @@ export default function Sidebar() {
               overflowMode="truncate"
             >
               <Item key="home" textValue="Home">
-                <NavItemContent icon={<Home {...iconProps} />} label="Home" />
+                <NavItemContent label="Home" />
               </Item>
               <Item key="assets" textValue="Assets">
-                <NavItemContent icon={<Images {...iconProps} />} label="Assets" />
+                <NavItemContent label="Assets" />
               </Item>
               <Item key="collections" textValue="Collections">
-                <NavItemContent icon={<FolderOpen {...iconProps} />} label="Collections" />
+                <NavItemContent label="Collections" />
               </Item>
               <Item key="insights" textValue="Insights">
-                <NavItemContent icon={<GraphTrend {...iconProps} />} label="Insights" />
+                <NavItemContent label="Insights" />
               </Item>
               <Item key="content-hub" textValue="Content Hub">
-                <NavItemContent icon={<Globe {...iconProps} />} label="Content Hub" />
+                <NavItemContent label="Content Hub" />
               </Item>
             </ListView>
           </View>
