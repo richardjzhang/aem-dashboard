@@ -128,40 +128,6 @@ export default function Sidebar() {
                 <NavItemContent icon={<Globe {...iconProps} />} label="Content Hub" />
               </Item>
             </ListView>
-
-            <View
-              marginTop="size-200"
-              marginBottom="size-150"
-              marginX="size-150"
-              borderTopWidth="thin"
-              borderTopColor="gray-300"
-            />
-
-            <Heading level={4} marginX="size-150" marginBottom="size-75">
-              Admin Tools
-            </Heading>
-
-            <ListView
-              aria-label="Admin tools navigation"
-              selectionMode="none"
-              density="compact"
-              isQuiet
-              width="100%"
-              overflowMode="truncate"
-            >
-              <Item key="metadata-schemas" textValue="Metadata Schemas">
-                <NavItemContent icon={<ViewAllTags {...iconProps} />} label="Metadata Schemas" />
-              </Item>
-              <Item key="reports" textValue="Reports">
-                <NavItemContent icon={<Report {...iconProps} />} label="Reports" />
-              </Item>
-              <Item key="workflows" textValue="Workflows">
-                <NavItemContent icon={<Workflow {...iconProps} />} label="Workflows" />
-              </Item>
-              <Item key="user-permissions" textValue="User Permissions">
-                <NavItemContent icon={<UserLock {...iconProps} />} label="User Permissions" />
-              </Item>
-            </ListView>
           </View>
         </View>
       </View>
