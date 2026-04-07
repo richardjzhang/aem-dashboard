@@ -1,113 +1,137 @@
 import {
   type Key,
-  Provider,
-  defaultTheme,
-  Picker,
-  Item,
   ListView,
+  ListViewItem,
+  Picker,
+  PickerItem,
+  Provider,
   Text,
-  View,
-} from '@adobe/react-spectrum';
+} from '@react-spectrum/s2';
+import { style } from '@react-spectrum/s2/style' with { type: 'macro' };
 import { useState } from 'react';
-function NavItemContent(props: { label: string }) {
-  return (
-    <Text>{props.label}</Text>
-  );
-}
+
+const environments = [
+  { key: 'production', label: 'Production' },
+  { key: 'stage', label: 'Stage' },
+  { key: 'development', label: 'Development' },
+  { key: 'sandbox', label: 'Sandbox' },
+  { key: 'preview', label: 'Preview' },
+  { key: 'archive', label: 'Archive' },
+  { key: 'staging', label: 'Staging' },
+] as const;
+
+const navigationItems = [
+  { key: 'home', label: 'Home' },
+  { key: 'assets', label: 'Assets' },
+  { key: 'collections', label: 'Collections' },
+  { key: 'insights', label: 'Insights' },
+  { key: 'content-hub', label: 'Content Hub' },
+] as const;
+
+const sidebarStyle = style({
+  display: 'flex',
+  flexDirection: 'column',
+  width: 248,
+  height: 'full',
+  minHeight: 0,
+  flexShrink: 0,
+  overflow: 'hidden',
+  borderEndWidth: 1,
+  borderStyle: 'solid',
+  borderColor: 'gray-300',
+});
+
+const sidebarScrollStyle = style({
+  display: 'flex',
+  flexDirection: 'column',
+  height: 'full',
+  minHeight: 0,
+  overflow: 'auto',
+  paddingTop: 20,
+  paddingBottom: 16,
+});
+
+const pickerSectionStyle = style({
+  flexShrink: 0,
+  paddingX: 16,
+  paddingBottom: 20,
+});
+
+const pickerStyle = style({
+  width: 'full',
+});
+
+const navigationSectionStyle = style({
+  display: 'flex',
+  flexDirection: 'column',
+  flexGrow: 1,
+  minHeight: 0,
+  paddingX: 8,
+});
+
+const navigationListStyle = style({
+  height: 'full',
+});
+
+const navigationLabelStyle = style({
+  display: 'flex',
+  alignItems: 'center',
+  minHeight: 24,
+});
 
 export default function Sidebar() {
   const [environment, setEnvironment] = useState<Key>('production');
 
   return (
-    <Provider theme={defaultTheme} colorScheme="dark">
-      <View
-        elementType="nav"
-        width={248}
-        height="100%"
-        minHeight={0}
-        flexShrink={0}
-        overflow="hidden"
-        backgroundColor="gray-75"
-        borderEndWidth="thin"
-        borderEndColor="gray-200"
-      >
-        <View
-          paddingTop="size-250"
-          paddingBottom="size-200"
-          height="100%"
-          minHeight={0}
-          overflow="auto"
-          UNSAFE_style={{ display: 'flex', flexDirection: 'column' }}
-        >
-          <View paddingX="size-200" paddingBottom="size-250">
-            <Picker
-              label="Environment"
-              aria-label="Select environment"
-              isQuiet
-              width="100%"
-              selectedKey={environment}
-              onSelectionChange={(key) => {
-                if (key != null) {
-                  setEnvironment(key);
-                }
-              }}
-            >
-              <Item key="production" textValue="Production">
-                Production
-              </Item>
-              <Item key="stage" textValue="Stage">
-                Stage
-              </Item>
-              <Item key="development" textValue="Development">
-                Development
-              </Item>
-              <Item key="sandbox" textValue="Sandbox">
-                Sandbox
-              </Item>
-              <Item key="preview" textValue="Preview">
-                Preview
-              </Item>
-              <Item key="archive" textValue="Archive">
-                Archive
-              </Item>
-              <Item key="staging" textValue="Staging">
-                Staging
-              </Item>
-            </Picker>
-          </View>
+    <Provider
+      elementType="nav"
+      colorScheme="dark"
+      background="layer-2"
+      styles={sidebarStyle}
+      aria-label="Sidebar"
+    >
+      <div className={sidebarScrollStyle}>
+        <div className={pickerSectionStyle}>
+          <Picker
+            label="Environment"
+            aria-label="Select environment"
+            isQuiet
+            styles={pickerStyle}
+            selectedKey={environment}
+            onSelectionChange={(key) => {
+              if (key != null) {
+                setEnvironment(key);
+              }
+            }}
+          >
+            {environments.map((item) => (
+              <PickerItem key={item.key} textValue={item.label}>
+                {item.label}
+              </PickerItem>
+            ))}
+          </Picker>
+        </div>
 
-          <View paddingX="size-100" flexGrow={1} minHeight={0} UNSAFE_style={{ display: 'flex', flexDirection: 'column' }}>
-            <ListView
-              aria-label="Application navigation"
-              selectionMode="single"
-              defaultSelectedKeys={['assets']}
-              selectionStyle="highlight"
-              density="compact"
-              isQuiet
-              flexGrow={1}
-              minHeight={0}
-              width="100%"
-              overflowMode="truncate"
-            >
-              <Item key="home" textValue="Home">
-                <NavItemContent label="Home" />
-              </Item>
-              <Item key="assets" textValue="Assets">
-                <NavItemContent label="Assets" />
-              </Item>
-              <Item key="collections" textValue="Collections">
-                <NavItemContent label="Collections" />
-              </Item>
-              <Item key="insights" textValue="Insights">
-                <NavItemContent label="Insights" />
-              </Item>
-              <Item key="content-hub" textValue="Content Hub">
-                <NavItemContent label="Content Hub" />
-              </Item>
-            </ListView>
-          </View>
-        </View>
-      </View>
+        <div className={navigationSectionStyle}>
+          <ListView
+            aria-label="Application navigation"
+            selectionMode="single"
+            defaultSelectedKeys={['assets']}
+            selectionStyle="highlight"
+            isQuiet
+            overflowMode="truncate"
+            styles={navigationListStyle}
+          >
+            {navigationItems.map((item) => (
+              <ListViewItem key={item.key} textValue={item.label}>
+                <Text slot="label" styles={navigationLabelStyle}>
+                  {item.label}
+                </Text>
+              </ListViewItem>
+            ))}
+          </ListView>
+        </div>
+      </div>
     </Provider>
   );
 }
