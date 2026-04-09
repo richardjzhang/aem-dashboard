@@ -18,6 +18,11 @@ import { assets, assetFileTypes, assetStatuses, type AssetRecord } from '../data
 import AppShell from './AppShell';
 import AssetCard from './assets/AssetCard';
 import AssetDetailPanel from './assets/AssetDetailPanel';
+import {
+  filterAssets,
+  type AssetFilterFileType,
+  type AssetFilterStatus,
+} from './assets/filterAssets';
 
 const pageStyle = style({
   display: 'flex',
@@ -128,8 +133,8 @@ const emptyStateStyle = style({
 });
 
 type ViewMode = 'grid' | 'list';
-type FileTypeFilter = (typeof assetFileTypes)[number];
-type StatusFilter = (typeof assetStatuses)[number];
+type FileTypeFilter = AssetFilterFileType;
+type StatusFilter = AssetFilterStatus;
 
 export default function AssetsPage() {
   const [searchValue, setSearchValue] = useState('');
@@ -138,14 +143,15 @@ export default function AssetsPage() {
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
   const [selectedAssetId, setSelectedAssetId] = useState<string | null>(null);
 
-  const filteredAssets = useMemo(() => {
-    return assets.filter((asset) => {
-      const matchesSearch = asset.filename.toLowerCase().includes(searchValue.trim().toLowerCase());
-      const matchesFileType = selectedFileType === 'All' || asset.fileType === selectedFileType;
-      const matchesStatus = selectedStatus === 'All' || asset.status === selectedStatus;
-      return matchesSearch && matchesFileType && matchesStatus;
-    });
-  }, [searchValue, selectedFileType, selectedStatus]);
+  const filteredAssets = useMemo(
+    () =>
+      filterAssets(assets, {
+        searchValue,
+        selectedFileType,
+        selectedStatus,
+      }),
+    [searchValue, selectedFileType, selectedStatus],
+  );
 
   const selectedAsset = useMemo(
     () => filteredAssets.find((asset) => asset.id === selectedAssetId) ?? null,
