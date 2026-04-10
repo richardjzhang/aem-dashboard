@@ -81,7 +81,6 @@ export default function Sidebar() {
             selectionMode="single"
             defaultSelectedKeys={new Set(['assets'])}
             selectionStyle="highlight"
-            density="compact"
             isQuiet
             overflowMode="truncate"
             styles={listStyles}
