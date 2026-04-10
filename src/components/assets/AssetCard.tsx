@@ -1,9 +1,9 @@
-import { Badge, StatusLight, Text } from '@react-spectrum/s2';
+import { Badge, Card, CardPreview, Content, StatusLight, Text } from '@react-spectrum/s2';
 import { style } from '@react-spectrum/s2/style' with { type: 'macro' };
 import type { AssetRecord } from '../../data/assets';
 import { getFileTypeVariant, getStatusVariant } from './presentation';
 
-const cardButtonStyle = style<{
+const cardStyle = style<{
   isSelected: boolean;
   view: 'grid' | 'list';
 }>({
@@ -35,7 +35,16 @@ const cardButtonStyle = style<{
   outlineStyle: 'none',
 });
 
-const previewStyle = style<{
+/* Card outside CardView renders a non-interactive div; onPress is stripped by filterDOMProps. */
+const cardHitTargetStyle = style({
+  width: 'full',
+  minWidth: 0,
+  borderRadius: 'xl',
+  cursor: 'pointer',
+  outlineStyle: 'none',
+});
+
+const previewWrapperStyle = style<{
   view: 'grid' | 'list';
 }>({
   borderRadius: 'lg',
@@ -55,12 +64,6 @@ const contentStyle = style({
   gap: 12,
   minWidth: 0,
   flexGrow: 1,
-  padding: 16,
-});
-
-const filenameStyle = style({
-  font: 'heading-sm',
-  color: 'neutral',
 });
 
 const metaRowStyle = style({
@@ -89,40 +92,53 @@ export default function AssetCard({ asset, isSelected, view, onSelect }: AssetCa
   const hasImage = Boolean(asset.thumbnail.imageSrc);
 
   return (
-    <button
-      type="button"
-      className={cardButtonStyle({ isSelected, view })}
-      aria-pressed={isSelected}
+    <div
+      className={cardHitTargetStyle}
+      role="button"
+      tabIndex={0}
+      aria-label={`Open details for ${asset.filename}`}
       onClick={() => onSelect(asset)}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onSelect(asset);
+        }
+      }}
     >
-      <div
-        className={`${previewStyle({ view })} app-asset-thumbnail ${
-          view === 'grid' ? 'app-asset-thumbnail--card-grid' : 'app-asset-thumbnail--card-list'
-        }`}
-        style={{ background: asset.thumbnail.background }}
-      >
-        {hasImage ? (
-          <>
-            <img
-              src={asset.thumbnail.imageSrc}
-              alt={`${asset.filename} preview`}
-              className="app-asset-thumbnail__image"
-            />
-            <div className="app-asset-thumbnail__overlay app-asset-thumbnail__overlay--image" />
-          </>
-        ) : (
-          <>
-            <div className="app-asset-thumbnail__overlay" />
-            <div className="app-asset-thumbnail__label">
-              <span className="app-asset-thumbnail__eyebrow">{asset.fileType}</span>
-              <span className="app-asset-thumbnail__title">{asset.thumbnail.title}</span>
-            </div>
-          </>
-        )}
-      </div>
+    <Card
+      UNSAFE_className={cardStyle({ isSelected, view }) as unknown as string & { properties?: never }}
+      textValue={asset.filename}
+    >
+      <CardPreview UNSAFE_className={previewWrapperStyle({ view }) as unknown as string & { properties?: never }}>
+        <div
+          className={`app-asset-thumbnail ${
+            view === 'grid' ? 'app-asset-thumbnail--card-grid' : 'app-asset-thumbnail--card-list'
+          }`}
+          style={{ background: asset.thumbnail.background }}
+        >
+          {hasImage ? (
+            <>
+              <img
+                src={asset.thumbnail.imageSrc}
+                alt={`${asset.filename} preview`}
+                className="app-asset-thumbnail__image"
+              />
+              <div className="app-asset-thumbnail__overlay app-asset-thumbnail__overlay--image" />
+            </>
+          ) : (
+            <>
+              <div className="app-asset-thumbnail__overlay" />
+              <div className="app-asset-thumbnail__label">
+                <span className="app-asset-thumbnail__eyebrow">{asset.fileType}</span>
+                <span className="app-asset-thumbnail__title">{asset.thumbnail.title}</span>
+              </div>
+            </>
+          )}
+        </div>
+      </CardPreview>
 
-      <div className={contentStyle}>
-        <div className={filenameStyle}>{asset.filename}</div>
+      <Content styles={contentStyle}>
+        <Text slot="title">{asset.filename}</Text>
 
         <div className={metaRowStyle}>
           <Badge size="M" variant={getFileTypeVariant(asset.fileType)} fillStyle="subtle">
@@ -136,7 +152,8 @@ export default function AssetCard({ asset, isSelected, view, onSelect }: AssetCa
           <Text>{asset.fileSize}</Text>
           <Text>Updated {asset.modifiedAt}</Text>
         </div>
-      </div>
-    </button>
+      </Content>
+    </Card>
+    </div>
   );
 }
