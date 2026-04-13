@@ -1,0 +1,19 @@
+---
+description: When a GitHub pull request exists for work mapped to a specific Jira issue (key in branch, PR title/body, chat, or explicit reference), transition that issue to In Review on the relevant board via Atlassian/Jira.
+alwaysApply: false
+---
+# Jira: PR opened → Under Review
+
+When a **GitHub pull request is created** for work that maps to a **specific Jira issue** (issue key in the branch name, PR title/body, chat, or explicit reference):
+
+1. **Update Jira** so the issue lands in **Under Review** (or the workflow status your board uses for that column—e.g. "In Review", "Code Review"). Use the project’s Atlassian/Jira integration or MCP tools in this workspace.
+2. **How to transition**: Pick the transition or status that matches **Under Review** on the relevant board; column names vary by project. If several boards apply, use the one implied by the ticket or team context.
+3. **If transition fails** (permissions, workflow, or unknown mapping): describe what you tried, report the error, and give the issue key plus target column so the user can move it manually.
+4. **Skip** if the user asked not to change Jira state, or if no Jira issue is tied to the PR/task.
+
+```text
+Example: Opened PR for branch feature/AEM-456-foo → transition AEM-456 to Under Review
+after the PR exists (link in chat or confirmed creation).
+```
+
+**Note:** Other rules may still apply when **no** PR exists yet (e.g. local completion only). Once a PR exists for the issue, prefer reflecting **review** state in Jira as above.

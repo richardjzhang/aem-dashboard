@@ -1,0 +1,35 @@
+---
+description: Do not modify existing React hook files unless the user explicitly requests it and the change is strictly necessary.
+alwaysApply: true
+---
+
+# Protect existing hook files
+
+Treat any file that exports React hooks as stable, production code. That includes:
+
+- `use*.ts`, `use*.tsx`
+- `*Hooks.ts`
+- Anything under `src/hooks/**` (and equivalent `hooks/**` paths in the repo)
+
+## Do not (by default)
+
+- Change implementation, parameters, or return types of existing hooks
+- Rename, remove, or reorder existing exported hooks
+- Refactor or “clean up” hook files for style or convenience alone
+
+## When you may edit an existing hook file
+
+Only if **both** are true:
+
+1. The user explicitly asked to change **that** hook or **that** file, and  
+2. The change is **strictly necessary** to satisfy that request.
+
+## If a hook change seems needed but was not requested
+
+- Do **not** edit the hook file.  
+- Explain what you think must change and ask for permission first.
+
+## Prefer instead
+
+- Update components, utilities, or other non-hook modules.  
+- Add **new** hooks in **new** files rather than extending or rewriting existing hook files.
