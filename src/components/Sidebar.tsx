@@ -61,6 +61,8 @@ const listStyles = style({
   width: 'full',
 });
 
+const defaultNavSelectedKeys = new Set(['assets']);
+
 export default function Sidebar() {
   return (
     <Provider
@@ -79,9 +81,8 @@ export default function Sidebar() {
           <ListView
             aria-label="Application navigation"
             selectionMode="single"
-            defaultSelectedKeys={new Set(['assets'])}
+            defaultSelectedKeys={defaultNavSelectedKeys}
             selectionStyle="highlight"
-            density="compact"
             isQuiet
             overflowMode="truncate"
             styles={listStyles}
