@@ -1,0 +1,321 @@
+---
+alwaysApply: false
+---
+# React package and API usage audit (monolithic rule demo)
+
+> **Why this file exists:** The same guidance lives split across
+> `.cursor/skills/react-package-usage-audit/SKILL.md` plus
+> `spectrum-s2-reference.md` and `spectrum-s2-examples.md`, which load **on demand**.
+> This rule inlines everything so you can contrast **token-heavy always/glob rules**
+> with **lean skills + optional attachments**. Flip `alwaysApply` to `true` in
+> frontmatter to feel the worst case in every session.
+
+## Goal
+
+Surface **concrete correctness issues** from misusing dependencies and their public APIs: wrong modules, missing setup, invalid or inconsistent **props**, hook misuse, and version/peer problems. Prefer evidence from the repo and types over generic lint opinions.
+
+## Phase 1 — Baseline
+
+1. Read `package.json` (dependencies + devDependencies). Note React major, framework (`next`, `vite`, `react-scripts`, `expo`), UI kits (MUI, Radix, Chakra, **@react-spectrum/s2**), forms, routing, and data libraries.
+2. If present, skim `package-lock.json` / `pnpm-lock.yaml` / `yarn.lock` for duplicate majors of `react`, `react-dom`, or nested copies that embed their own React.
+3. Note monorepo/workspace layout (`packages/*`, `apps/*`) so searches stay scoped correctly.
+4. When the codebase is TypeScript, run or consult existing **`tsc` / IDE diagnostics** for the changed or audited surface—many invalid props surface there before runtime.
+
+## Phase 2 — Framework boundary checks
+
+**Next.js (App Router)**
+
+- `next/router` (`useRouter`) in `app/` → should usually be `next/navigation` (`useRouter`, `usePathname`, `useSearchParams`).
+- Server-only modules (`next/headers`, `next/cache`, DB drivers) imported into `"use client"` files or used where only Server Components are valid.
+- Client hooks (`useState`, event handlers) in Server Components without a dedicated Client child.
+
+**Next.js (Pages Router)**
+
+- Mixed App/Pages APIs in the wrong tree.
+
+**Vite / CRA**
+
+- `process.env` vs `import.meta.env` (Vite) / `REACT_APP_*` (CRA) mismatches.
+
+Record each hit with **file path**, **line**, **why it is wrong**, and **expected pattern**.
+
+## Phase 3 — Provider and context wiring
+
+Libraries that need a **root provider** or **singleton** must have one before hooks run:
+
+| Package (examples) | Look for | Common bug |
+|--------------------|----------|------------|
+| `@tanstack/react-query` | `useQuery`, `useMutation` | No `QueryClientProvider` |
+| `react-redux` | `useSelector`, `useDispatch` | No `<Provider store={...}>` |
+| `urql`, `@apollo/client` | client hooks | Missing provider |
+| `react-router-dom` | `useNavigate`, `useParams` | Outside `Router` |
+| `next-themes`, i18n libs | theme/intl hooks | Missing or mis-layered provider |
+| `@react-spectrum/s2` | `Provider`, routed overlays/links | Missing `Provider`, missing `router` when using React Router, or wrapping S2 in `@adobe/react-spectrum` `Provider` |
+
+Confirm providers in app root (`app/layout.tsx`, `main.tsx`, `_app.tsx`).
+
+### Adobe Spectrum 2 (`@react-spectrum/s2`) — inlined from skill
+
+When this package appears in the repo (or the user names Spectrum 2 / S2), the skill normally points at separate markdown files; **they are inlined below** in this demo rule.
+
+**Props on S2 components:** Treat each `@react-spectrum/s2` component as having a **strict public API**. Confirm call sites pass **only valid props** for that component and installed version:
+
+- Prefer **`tsc` / IDE diagnostics** on audited files: invalid or misspelled prop names, wrong union values, or props that belong to Spectrum 1 / other kits often show up as type errors.
+- Do **not** assume Spectrum 1 prop names or DOM habits carry over (e.g. legacy `UNSAFE_*`, RS1-only slots, or arbitrary `className` where S2 uses style macros or documented patterns).
+- Watch **`...rest` / wrapper spreads** that widen props at runtime but are not accepted by the underlying S2 component; strip or narrow before forwarding.
+- When types are ambiguous, **match the component’s exported prop types** or the package docs for your **exact** `@react-spectrum/s2` version.
+
+Stay within the audit scope: correctness of imports, providers, build setup, and props—not full design reviews unless asked.
+
+---
+
+## Inlined: Spectrum 2 (`@react-spectrum/s2`) — audit reference
+
+*(source: `.cursor/skills/react-package-usage-audit/spectrum-s2-reference.md`)*
+
+Use this section when `package.json` lists `@react-spectrum/s2` or the user asks about Spectrum 2 / S2 wiring.
+
+### What “correctly wired” usually means
+
+S2 is not only components: **global CSS**, **macro-based styling**, **root Provider** (often with **router integration**), and **build plugins** must line up or you get silent layout issues, broken navigation inside primitives, or build failures.
+
+### Checklist (repo audit)
+
+1. **Entry CSS**: `import '@react-spectrum/s2/page.css'` once (typically `main.tsx` / app entry). Missing → baseline typography, background, and layout tokens can be wrong.
+2. **Root `Provider`**: From `@react-spectrum/s2`, wrapping the tree that renders S2 UI. Confirm `locale`, `colorScheme`, and any documented props your app relies on.
+3. **Router hook-up (React Router)**: If the app uses client-side routing, `Provider` often needs `router={{ navigate, useHref }}` from the same router instance as your app. Mismatch → link-style controls and routing-aware children can misbehave.
+4. **Style macros**: `import { style, iconStyle } from '@react-spectrum/s2/style' with { type: 'macro' }` requires a **Vite/Webpack plugin** that understands Parcel macros (e.g. `unplugin-parcel-macros`). Without it, builds break or styles do not apply as intended.
+5. **Locales (optional but common)**: `@react-aria/optimize-locales-plugin` in Vite with `locales: ['en-US']` (or your set) reduces bundle size; wrong `enforce` order can affect resolution—compare to a known-good `vite.config`.
+6. **Icons**: Default import from `@react-spectrum/s2/icons/<PascalName>` only—not `@spectrum-icons` / Spectrum 1 icon paths unless you are intentionally bridging (usually avoid in S2-first apps).
+7. **Spectrum 1 in the same app**: `@adobe/react-spectrum` uses a different `Provider` and component set. Mixing without migration causes **duplicate design contexts**, inconsistent UX, and invalid prop assumptions.
+
+### Phase mapping (main audit)
+
+| Main audit phase | S2-specific focus |
+|------------------|------------------|
+| Phase 3 (providers) | `Provider` from `@react-spectrum/s2`; router prop when using React Router |
+| Phase 4 (entrypoints) | `@react-spectrum/s2` vs `@adobe/react-spectrum`; `…/style` macro import; `…/icons/*` |
+| Phase 5 (props) | Compare to **installed** S2 typings—S2 props differ from Spectrum 1 for the same conceptual control |
+| Phase 7 (peers) | React Aria / React Stately versions pulled by `@react-spectrum/s2`; watch duplicate `react` |
+
+### Where to confirm APIs
+
+- Prefer **TypeScript** from `node_modules/@react-spectrum/s2` for the exact prop surface on the installed version.
+- Public docs move; the **lockfile + types** are the source of truth for an audit.
+
+---
+
+## Inlined: Spectrum 2 — examples for audits
+
+*(source: `.cursor/skills/react-package-usage-audit/spectrum-s2-examples.md`)*
+
+Concrete patterns aligned with **Vite + React Router**. Use when judging whether S2 usage is correct or flagging fixes.
+
+### Root wiring (good)
+
+**`main.tsx` — global S2 page styles**
+
+```tsx
+import '@react-spectrum/s2/page.css';
+```
+
+**`App.tsx` — Provider + React Router 7**
+
+```tsx
+import { BrowserRouter, useHref, useNavigate } from 'react-router';
+import { Provider } from '@react-spectrum/s2';
+
+function AppProvider({ children }: { children: React.ReactNode }) {
+  const navigate = useNavigate();
+  return (
+    <Provider
+      locale="en-US"
+      colorScheme="light"
+      background="base"
+      router={{ navigate, useHref }}
+    >
+      {children}
+    </Provider>
+  );
+}
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <AppProvider>{/* routes */}</AppProvider>
+    </BrowserRouter>
+  );
+}
+```
+
+**`vite.config.ts` — macros + locale optimization (representative)**
+
+```ts
+import macros from 'unplugin-parcel-macros';
+import optimizeLocales from '@react-aria/optimize-locales-plugin';
+
+export default defineConfig({
+  plugins: [
+    macros.vite(),
+    react(),
+    { ...optimizeLocales.vite({ locales: ['en-US'] }), enforce: 'pre' },
+  ],
+});
+```
+
+### Components, styles, icons (good)
+
+```tsx
+import { ActionButton, Text } from '@react-spectrum/s2';
+import { style, iconStyle } from '@react-spectrum/s2/style' with { type: 'macro' };
+import Bell from '@react-spectrum/s2/icons/Bell';
+
+export function Example() {
+  return (
+    <div className={style({ display: 'flex', gap: 8, alignItems: 'center' })}>
+      <ActionButton aria-label="Notifications">
+        <Bell styles={iconStyle({ size: 'M' })} />
+      </ActionButton>
+      <Text>Hello</Text>
+    </div>
+  );
+}
+```
+
+Adjust `style` / `iconStyle` keys to match **current** S2 typings for your version—do not assume Spectrum 1 prop names.
+
+### Anti-patterns (flag in audits)
+
+**Wrong design system or mixed roots**
+
+```tsx
+// BAD: Spectrum 1 Provider wrapping S2 children (wrong context / themes)
+import { Provider } from '@adobe/react-spectrum';
+import { Button } from '@react-spectrum/s2';
+```
+
+**Missing page CSS**
+
+```tsx
+// BAD: S2 components rendered but no @react-spectrum/s2/page.css in entry
+```
+
+**Macro import without build support**
+
+```tsx
+// BAD if unplugin-parcel-macros (or equivalent) is not configured
+import { style } from '@react-spectrum/s2/style' with { type: 'macro' };
+```
+
+**Router-aware app but Provider without `router`**
+
+```tsx
+// BAD when using React Router: S2 Provider without router prop
+<Provider locale="en-US" colorScheme="light">
+  {children}
+</Provider>
+```
+
+**Wrong icon entry**
+
+```tsx
+// BAD: ad-hoc icon pack or Spectrum 1 paths for product UI
+import { Icon } from '@spectrum-icons/ui/Alert';
+// Prefer: import Alert from '@react-spectrum/s2/icons/Alert';
+```
+
+**Raw controls where S2 supplies primitives**
+
+```tsx
+// BAD for S2-first product UI (accessibility + design contract)
+<button type="button" onClick={onSave}>Save</button>
+// Prefer: <Button onPress={onSave}>Save</Button> from @react-spectrum/s2
+```
+
+### Severity hints
+
+| Issue | Typical severity |
+|-------|------------------|
+| No `Provider` / wrong `Provider` | **critical** |
+| Missing `page.css` | **major** (widespread visual / layout wrongness) |
+| Missing macro plugin with macro imports | **critical** (build) |
+| Missing `router` on `Provider` in routed app | **major** |
+| Spectrum 1 + S2 mixed in same surface | **major** (consistency; migration) |
+| Wrong icon import | **minor**–**major** (build vs wrong glyph) |
+
+---
+
+## Phase 4 — Wrong entrypoint / wrong package
+
+- `react-router` vs `react-router-dom` in browser code.
+- Imports that do not exist for the installed major (check version in `package.json`).
+- UI kit entrypoints (`@mui/material`, lab, system) aligned with installed version and theming setup.
+
+## Phase 5 — Props and component API usage
+
+Verify **call sites match each library’s contract** (docs, TypeScript types, or shipped `PropTypes`).
+
+**Cross-cutting (React + DOM)**
+
+- **Invalid DOM attributes**: spreading `...props` or passing library-only props onto native elements (`div`, `span`) so unknown keys hit the DOM (warnings, hydration noise, or invalid HTML). Prefer destructuring out non-DOM props, `shouldForwardProp` (styled/emotion), or the library’s documented slot/wrapper pattern.
+- **`className` vs `class`**, **`style` shape**, **`ref` forwarding**: wrappers that omit `forwardRef` where the library or parent expects a ref to a real node.
+- **Boolean vs string**: props that must be booleans but arrive as strings from serializers or HTML.
+
+**Third-party components**
+
+- **Required vs optional**: missing required props, or omitting props that the library treats as required in a given `variant` / `mode`.
+- **Invalid combinations**: mutually exclusive props set together, or a prop only valid when another flag is on (discriminated patterns: e.g. controlled vs uncontrolled, `open` + `defaultOpen`).
+- **Renamed / deprecated props** after upgrades: grep for old names mentioned in the library’s migration guide for your major.
+- **Version-specific APIs**: props that exist only in newer majors (or removed in newer)—confirm against installed version.
+
+**Adobe Spectrum 2 (`@react-spectrum/s2`)**
+
+- Apply Phase 5 rules **per S2 component**: every prop at each call site should be **valid for that component** per shipped TypeScript types or official docs for the installed version (not RS1 names, not guessed DOM passthrough).
+- When auditing styling- or layout-related props, use the **inlined S2 reference and examples** above (style macros vs invalid attributes).
+
+**Patterns that often hide prop bugs**
+
+- Huge `...rest` spreads into custom components without stripping invalid keys before they reach DOM or headless primitives.
+- Wrappers that **narrow** the public props type in TS but still **forward** a wider bag at runtime.
+- Copy-paste from docs of a **different major** (different prop names or defaults).
+
+Flag issues with the **prop name(s)** involved and the **correct shape** per the installed package.
+
+## Phase 6 — Hooks rules and SSR pitfalls
+
+- Hooks called conditionally or after early returns.
+- `useLayoutEffect` on server-rendered paths without guards where it causes warnings or breakage.
+- `useEffect` dependencies: flag only when omission likely causes **stale behavior tied to props/state**, not blanket exhaustive-deps churn.
+
+## Phase 7 — Peer dependency and duplicate React
+
+1. Use `npm ls react` / `pnpm why react` (or `pnpm dlx sherif` when appropriate) to spot duplicates or peer warnings.
+2. **Invalid hook call** → duplicate React or mismatched `react` / `react-dom`.
+3. **Context is null** → missing provider or different React instance between provider and consumer.
+
+## Output format
+
+```markdown
+## React package & API audit — [project name]
+
+### Summary
+- [N] issues: [critical] critical, [major] major, [minor] minor
+
+### Findings
+1. **[severity]** [title] — `[file:line]`
+   - **Symptom:** …
+   - **Cause:** … (name props/APIs explicitly when relevant)
+   - **Fix:** …
+
+### Residual risks / follow-ups
+- …
+```
+
+**Severity**: **critical** (breakage, wrong data, security), **major** (likely user-visible bug), **minor** (edge case / warning-only).
+
+## Principles
+
+- Tie findings to **specific imports, components, and prop names**; avoid vague “check props” without pointing at the contract that is violated.
+- Use **TypeScript errors and library types** as primary signal for invalid props when available.
+- Do not treat naming style or bundle size as correctness unless the user expanded scope.
+- When unsure an API or prop exists for the installed version, **confirm in `package.json` / lockfile** (and types or docs for that major) before recommending a change.
