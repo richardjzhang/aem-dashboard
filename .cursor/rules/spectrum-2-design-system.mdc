@@ -1,0 +1,36 @@
+---
+description: Require Adobe Spectrum 2 (@react-spectrum/s2) for all React UI components
+globs: src/**/*.tsx
+alwaysApply: false
+---
+
+# Spectrum 2 design system (strict)
+
+When creating **new** components or **editing** existing ones under `src/`, UI must follow **Spectrum 2** via `@react-spectrum/s2`. This is non-negotiable for product UI.
+
+## Required
+
+- **Components**: Import primitives from `@react-spectrum/s2` (e.g. `Button`, `ActionButton`, `Text`, `Dialog`, `TextField`, `Provider`, …). Use the S2 component that matches the pattern instead of raw HTML controls (`<button>`, `<input>`, custom clickable `<div>`s) when S2 provides one.
+- **Layout & visuals**: Use `style` (and `iconStyle` where needed) from `@react-spectrum/s2/style` with `with { type: 'macro' }`. Prefer Spectrum-oriented properties and tokens (`font:`, `color:`, spacing props, etc.) over ad-hoc pixel-perfect CSS that duplicates system semantics.
+- **Icons**: Import from `@react-spectrum/s2/icons/<Name>` only.
+- **App shell**: Root continues to use `Provider` from `@react-spectrum/s2` and global `@react-spectrum/s2/page.css` in the entry — do not replace with another design system or strip those.
+
+## Forbidden for new or changed code
+
+- **Do not** add or expand imports from `@adobe/react-spectrum` (Spectrum 1). If you touch a file that still uses it, **migrate that usage to `@react-spectrum/s2`** in the same change when feasible.
+- **Do not** add alternate component libraries (e.g. shadcn, MUI, Chakra) for UI that belongs in Spectrum 2.
+- **Do not** introduce Spectrum 1–specific packages or themes for new work.
+
+## Examples
+
+```tsx
+// BAD — Spectrum 1 or raw control
+import { Button } from '@adobe/react-spectrum';
+<button type="button" onClick={...}>Save</button>
+
+// GOOD — Spectrum 2
+import { Button } from '@react-spectrum/s2';
+import { style } from '@react-spectrum/s2/style' with { type: 'macro' };
+```
+
+If a needed control is missing from S2, prefer composing S2 primitives and `style()` before inventing a one-off widget; document the gap briefly in code comments only when necessary.
