@@ -222,8 +222,10 @@ function main() {
   try {
     input = JSON.parse(readFileSync(0, "utf8"));
   } catch {
-    emit({});
-    return;
+    process.stderr.write(
+      "env-secret-guard: invalid or empty hook input (JSON parse failed)\n",
+    );
+    process.exit(2);
   }
 
   const event = input.hook_event_name;
@@ -253,5 +255,5 @@ try {
   main();
 } catch (err) {
   process.stderr.write(`env-secret-guard: ${err.message}\n`);
-  emit({});
+  process.exit(2);
 }
