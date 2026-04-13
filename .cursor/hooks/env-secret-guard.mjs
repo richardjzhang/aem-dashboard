@@ -39,7 +39,8 @@ function isSecretFile(name) {
 function filePathIsSecret(filePath) {
   if (!filePath || typeof filePath !== "string") return false;
   const norm = normalize(String(filePath).replace(/\\/g, "/"));
-  const segments = norm.split("/").filter(Boolean);
+  // Windows normalize() may convert `/` back to `\`; split on both separators.
+  const segments = norm.split(/[/\\]/).filter(Boolean);
   for (const seg of segments) {
     if (isSecretFile(seg)) return true;
   }
