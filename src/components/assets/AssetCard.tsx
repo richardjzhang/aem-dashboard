@@ -105,6 +105,7 @@ export default function AssetCard({ asset, isSelected, view, onSelect }: AssetCa
         }
       }}
     >
+    {/* KAN-60: keep Card props within CardProps only; invalid demo props break tsc -b. */}
     <Card
       UNSAFE_className={cardStyle({ isSelected, view }) as unknown as string & { properties?: never }}
       textValue={asset.filename}
