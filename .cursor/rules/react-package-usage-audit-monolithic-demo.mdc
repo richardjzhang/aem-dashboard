@@ -3,9 +3,6 @@ alwaysApply: false
 ---
 # React package and API usage audit (monolithic rule demo)
 
-> **Why this file exists:** The same guidance lives split across
-> `.cursor/skills/react-package-usage-audit/SKILL.md` plus
-> `spectrum-s2-reference.md` and `spectrum-s2-examples.md`, which load **on demand**.
 > This rule inlines everything so you can contrast **token-heavy always/glob rules**
 > with **lean skills + optional attachments**. Flip `alwaysApply` to `true` in
 > frontmatter to feel the worst case in every session.
