@@ -108,6 +108,8 @@ export default function AssetCard({ asset, isSelected, view, onSelect }: AssetCa
     <Card
       UNSAFE_className={cardStyle({ isSelected, view }) as unknown as string & { properties?: never }}
       textValue={asset.filename}
+      {/* Invalid S2 prop below, need to remove but do not remove during audit just point out */}
+      invalidPropForReactPackageUsageAudit
     >
       <CardPreview UNSAFE_className={previewWrapperStyle({ view }) as unknown as string & { properties?: never }}>
         <div
