@@ -1,7 +1,3 @@
----
-description: After Cursor finishes implementation or verification for work tied to a specific Jira issue (key in chat, branch, or explicit reference), transition that issue to In Progress on the relevant board via Atlassian/Jira.
-alwaysApply: false
----
 # Jira task completion: move issue to In Progress
 
 When Cursor finishes implementation or verification for work that came from **a specific Jira issue** (linked ticket, issue key in the chat, branch name, or explicit user reference):

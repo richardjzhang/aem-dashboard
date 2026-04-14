@@ -1,7 +1,3 @@
----
-description: When a GitHub pull request exists for work mapped to a specific Jira issue (key in branch, PR title/body, chat, or explicit reference), transition that issue to In Review on the relevant board via Atlassian/Jira.
-alwaysApply: false
----
 # Jira: PR opened → Under Review
 
 When a **GitHub pull request is created** for work that maps to a **specific Jira issue** (issue key in the branch name, PR title/body, chat, or explicit reference):
