@@ -1,21 +1,21 @@
 ---
-name: react-package-usage-audit
+name: package-usage-audit
 description: >-
-  Audits that React/Next.js projects use npm packages correctly—imports and
-  providers, framework APIs, and component usage including props (valid
-  names, required vs optional, invalid DOM passthrough, deprecated or
-  mutually-exclusive props). Covers Adobe Spectrum 2 (@react-spectrum/s2):
-  Provider, page.css, style macros, icons, React Router integration, and
-  avoiding mixed Spectrum 1 (@adobe/react-spectrum) usage, and that S2 components receive
-  valid props per shipped types/docs—load spectrum-s2-reference.md and
-  spectrum-s2-examples.md when package.json includes @react-spectrum/s2 or the
-  user mentions Spectrum 2 or S2. Use when
-  verifying libraries are wired and called right, debugging prop warnings,
-  TypeScript prop errors, runtime API errors, or when the user asks if
-  dependencies are being used properly.
+  Audits that this codebase uses npm packages correctly—imports and providers,
+  framework APIs (including React/Next.js where applicable), and component usage
+  including props (valid names, required vs optional, invalid DOM passthrough,
+  deprecated or mutually-exclusive props). Covers Adobe Spectrum 2
+  (@react-spectrum/s2): Provider, page.css, style macros, icons, React Router
+  integration, and avoiding mixed Spectrum 1 (@adobe/react-spectrum) usage, and
+  that S2 components receive valid props per shipped types/docs—load
+  spectrum-s2-reference.md and spectrum-s2-examples.md when package.json includes
+  @react-spectrum/s2 or the user mentions Spectrum 2 or S2. Use when verifying
+  libraries are wired and called right, debugging prop warnings, TypeScript prop
+  errors, runtime API errors, or when the user asks if dependencies are being used
+  properly.
 ---
 
-# React package and API usage audit
+# Package and API usage audit
 
 ## Goal
 
@@ -128,7 +128,7 @@ Flag issues with the **prop name(s)** involved and the **correct shape** per the
 ## Output format
 
 ```markdown
-## React package & API audit — [project name]
+## Package & API audit — [project name]
 
 ### Summary
 - [N] issues: [critical] critical, [major] major, [minor] minor

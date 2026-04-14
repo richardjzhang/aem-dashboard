@@ -1,11 +1,11 @@
 ---
 alwaysApply: false
 ---
-# React package and API usage audit (monolithic rule demo)
+# Package and API usage audit (rule)
 
-> This rule inlines everything so you can contrast **token-heavy always/glob rules**
-> with **lean skills + optional attachments**. Flip `alwaysApply` to `true` in
-> frontmatter to feel the worst case in every session.
+> Optional Cursor rule: enable via globs or manual attach when you want this audit
+> guidance inlined in context. For the leaner workflow, use the
+> **`package-usage-audit`** skill and its Spectrum 2 attachment files instead.
 
 ## Goal
 
@@ -53,7 +53,7 @@ Confirm providers in app root (`app/layout.tsx`, `main.tsx`, `_app.tsx`).
 
 ### Adobe Spectrum 2 (`@react-spectrum/s2`) — inlined from skill
 
-When this package appears in the repo (or the user names Spectrum 2 / S2), the skill normally points at separate markdown files; **they are inlined below** in this demo rule.
+When this package appears in the repo (or the user names Spectrum 2 / S2), the skill normally points at separate markdown files; **they are inlined below** for this rule.
 
 **Props on S2 components:** Treat each `@react-spectrum/s2` component as having a **strict public API**. Confirm call sites pass **only valid props** for that component and installed version:
 
@@ -68,7 +68,7 @@ Stay within the audit scope: correctness of imports, providers, build setup, and
 
 ## Inlined: Spectrum 2 (`@react-spectrum/s2`) — audit reference
 
-*(source: `.cursor/skills/react-package-usage-audit/spectrum-s2-reference.md`)*
+*(source: `.cursor/skills/package-usage-audit/spectrum-s2-reference.md`)*
 
 Use this section when `package.json` lists `@react-spectrum/s2` or the user asks about Spectrum 2 / S2 wiring.
 
@@ -104,7 +104,7 @@ S2 is not only components: **global CSS**, **macro-based styling**, **root Provi
 
 ## Inlined: Spectrum 2 — examples for audits
 
-*(source: `.cursor/skills/react-package-usage-audit/spectrum-s2-examples.md`)*
+*(source: `.cursor/skills/package-usage-audit/spectrum-s2-examples.md`)*
 
 Concrete patterns aligned with **Vite + React Router**. Use when judging whether S2 usage is correct or flagging fixes.
 
@@ -293,7 +293,7 @@ Flag issues with the **prop name(s)** involved and the **correct shape** per the
 ## Output format
 
 ```markdown
-## React package & API audit — [project name]
+## Package & API audit — [project name]
 
 ### Summary
 - [N] issues: [critical] critical, [major] major, [minor] minor
