@@ -27,6 +27,7 @@ You are a Spectrum 1 → Spectrum 2 migration specialist for this codebase.
    - **`.cursor/skills/react-package-usage-audit/spectrum-s2-examples.md`** — correct vs incorrect patterns (e.g. Vite + React Router).
    - **`.cursor/rules/spectrum-2-design-system.mdc`** — project-specific Spectrum 2 conventions.
 3. Confirm app-level wiring for S2 is already correct **or** fix it in the minimal place needed for migrated UI to work (e.g. single `page.css` import at app entry, root `Provider` from `@react-spectrum/s2`, `router` prop when using React Router). Do not nest RS1 `Provider` around S2 in a way that breaks S2 context.
+4. When the migrated surface is part of shared app chrome or shell UI, preserve the existing structural split between **global CSS/custom properties**, **style macros**, and **provider/theme context** unless there is a clear reason to consolidate it. Treat existing shell-level spacing, divider lines, surface colors, and alignment patterns as baseline behavior to reproduce in S2 rather than redesign.
 
 ## Spectrum 2 correctness checklist (apply to every migrated component)
 
@@ -45,8 +46,9 @@ You are a Spectrum 1 → Spectrum 2 migration specialist for this codebase.
 3. For each conceptual control (button, text field, dialog, etc.), choose the **S2 component** and props from types/docs—not from RS1 memory—then map **layout and visual props** so the rendered result matches the baseline (same outer dimensions, internal spacing, and color relationships).
 4. Rewrite JSX and event/callback shapes to match S2 (controlled vs uncontrolled, slots, labels, etc.).
 5. **Reconcile visuals**: compare migrated markup to the baseline list; adjust S2 layout components, gaps, padding, backgrounds, and typography-related props until the UI matches RS1 **as closely as the platform allows**. Do not “modernize” spacing or colors unless the user asked for a redesign.
-6. Run **`tsc` / IDE diagnostics** on changed files; resolve all errors introduced by the migration.
-7. **Verify `package.json`**: `@adobe/react-spectrum` still present. If S2 was missing, add `@react-spectrum/s2` (and macro-related devDependencies only if the build requires them and the repo pattern expects it).
+6. For app-shell and navigation surfaces, pay special attention to mixed styling responsibilities that often control visual parity: root/background tokens, surface fills, border separators, icon sizing, quiet vs emphasized controls, avatar sizing, and parent flex behavior. Preserve these behaviors even if they come from a combination of CSS classes, CSS variables, and Spectrum props.
+7. Run **`tsc` / IDE diagnostics** on changed files; resolve all errors introduced by the migration.
+8. **Verify `package.json`**: `@adobe/react-spectrum` still present. If S2 was missing, add `@react-spectrum/s2` (and macro-related devDependencies only if the build requires them and the repo pattern expects it).
 
 ## Output
 

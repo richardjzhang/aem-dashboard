@@ -1,9 +1,8 @@
-import { ActionButton, Avatar, Text } from '@react-spectrum/s2';
+import { ActionButton, Avatar, Provider, Text, defaultTheme } from '@adobe/react-spectrum';
 import { style } from '@react-spectrum/s2/style' with { type: 'macro' };
-import Feedback from '@react-spectrum/s2/icons/Feedback';
-import Bell from '@react-spectrum/s2/icons/Bell';
-import More from '@react-spectrum/s2/icons/More';
-import { iconStyle } from '@react-spectrum/s2/style' with { type: 'macro' };
+import Bell from '@spectrum-icons/workflow/Bell';
+import Feedback from '@spectrum-icons/workflow/Feedback';
+import More from '@spectrum-icons/workflow/More';
 
 const topBarStyle = style({
   display: 'flex',
@@ -43,6 +42,7 @@ const rightActionsStyle = style({
   alignItems: 'center',
   gap: 4,
   flexShrink: 0,
+  backgroundColor: 'white',
 });
 
 export default function TopBar() {
@@ -56,19 +56,21 @@ export default function TopBar() {
         </div>
       </div>
 
-      <div className={rightActionsStyle}>
-        <ActionButton aria-label="Feedback">
-          <Feedback styles={iconStyle({ size: 'S' })} />
-          <Text>Feedback</Text>
-        </ActionButton>
-        <ActionButton isQuiet aria-label="Notifications">
-          <Bell styles={iconStyle({ size: 'S' })} />
-        </ActionButton>
-        <ActionButton isQuiet aria-label="More options">
-          <More styles={iconStyle({ size: 'S' })} />
-        </ActionButton>
-        <Avatar src="https://i.pravatar.cc/96?u=rick" alt="Rick" size={32} />
-      </div>
+      <Provider theme={defaultTheme} colorScheme="light">
+        <div className={rightActionsStyle}>
+          <ActionButton aria-label="Feedback">
+            <Feedback />
+            <Text>Feedback</Text>
+          </ActionButton>
+          <ActionButton isQuiet aria-label="Notifications">
+            <Bell />
+          </ActionButton>
+          <ActionButton isQuiet aria-label="More options">
+            <More />
+          </ActionButton>
+          <Avatar src="https://i.pravatar.cc/96?u=rick" alt="Rick" size={32} />
+        </div>
+      </Provider>
     </header>
   );
 }
