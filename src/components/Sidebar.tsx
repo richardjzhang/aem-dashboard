@@ -1,14 +1,13 @@
 import {
-  type Key,
   Provider,
   defaultTheme,
-  Picker,
   Item,
+  LabeledValue,
+  Link,
   ListView,
   Text,
   View,
 } from '@adobe/react-spectrum';
-import { useState } from 'react';
 function NavItemContent(props: { label: string }) {
   return (
     <Text>{props.label}</Text>
@@ -16,8 +15,6 @@ function NavItemContent(props: { label: string }) {
 }
 
 export default function Sidebar() {
-  const [environment, setEnvironment] = useState<Key>('production');
-
   return (
     <Provider theme={defaultTheme} colorScheme="dark">
       <View
@@ -40,40 +37,15 @@ export default function Sidebar() {
           UNSAFE_style={{ display: 'flex', flexDirection: 'column' }}
         >
           <View paddingX="size-200" paddingBottom="size-250">
-            <Picker
+            <LabeledValue
               label="Environment"
-              aria-label="Select environment"
-              isQuiet
               width="100%"
-              selectedKey={environment}
-              onSelectionChange={(key) => {
-                if (key != null) {
-                  setEnvironment(key);
-                }
-              }}
-            >
-              <Item key="production" textValue="Production">
-                Production
-              </Item>
-              <Item key="stage" textValue="Stage">
-                Stage
-              </Item>
-              <Item key="development" textValue="Development">
-                Development
-              </Item>
-              <Item key="sandbox" textValue="Sandbox">
-                Sandbox
-              </Item>
-              <Item key="preview" textValue="Preview">
-                Preview
-              </Item>
-              <Item key="archive" textValue="Archive">
-                Archive
-              </Item>
-              <Item key="staging" textValue="Staging">
-                Staging
-              </Item>
-            </Picker>
+              value={
+                <Link isQuiet onPress={() => {}}>
+                  Production
+                </Link>
+              }
+            />
           </View>
 
           <View paddingX="size-100" flexGrow={1} minHeight={0} UNSAFE_style={{ display: 'flex', flexDirection: 'column' }}>
