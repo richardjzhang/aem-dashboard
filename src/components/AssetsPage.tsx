@@ -3,6 +3,7 @@ import {
   Breadcrumb,
   Breadcrumbs,
   Button,
+  Heading,
   SearchField,
   Text,
   ToggleButton,
@@ -169,7 +170,9 @@ export default function AssetsPage() {
             <div className={heroRowStyle}>
               <div className={titleBlockStyle}>
                 <div className={eyebrowStyle}>Digital Asset Management workspace</div>
-                <h1 className={titleStyle}>AEM Assets</h1>
+                <Heading level={1} styles={titleStyle}>
+                  AEM Assets
+                </Heading>
               </div>
 
               <div className={toolbarStyle}>
