@@ -1,8 +1,8 @@
-import { ActionButton, Avatar, Provider, Text, defaultTheme } from '@adobe/react-spectrum';
+import { ActionButton, Avatar, Text } from '@react-spectrum/s2';
 import { style } from '@react-spectrum/s2/style' with { type: 'macro' };
-import Bell from '@spectrum-icons/workflow/Bell';
-import Feedback from '@spectrum-icons/workflow/Feedback';
-import More from '@spectrum-icons/workflow/More';
+import Bell from '@react-spectrum/s2/icons/Bell';
+import Feedback from '@react-spectrum/s2/icons/Feedback';
+import More from '@react-spectrum/s2/icons/More';
 
 const topBarStyle = style({
   display: 'flex',
@@ -56,21 +56,19 @@ export default function TopBar() {
         </div>
       </div>
 
-      <Provider theme={defaultTheme} colorScheme="light">
-        <div className={rightActionsStyle}>
-          <ActionButton aria-label="Feedback">
-            <Feedback />
-            <Text>Feedback</Text>
-          </ActionButton>
-          <ActionButton isQuiet aria-label="Notifications">
-            <Bell />
-          </ActionButton>
-          <ActionButton isQuiet aria-label="More options">
-            <More />
-          </ActionButton>
-          <Avatar src="https://i.pravatar.cc/96?u=rick" alt="Rick" size={32} />
-        </div>
-      </Provider>
+      <div className={rightActionsStyle}>
+        <ActionButton aria-label="Feedback">
+          <Feedback />
+          <Text>Feedback</Text>
+        </ActionButton>
+        <ActionButton isQuiet aria-label="Notifications">
+          <Bell />
+        </ActionButton>
+        <ActionButton isQuiet aria-label="More options">
+          <More />
+        </ActionButton>
+        <Avatar src="https://i.pravatar.cc/96?u=rick" alt="Rick" size={32} />
+      </div>
     </header>
   );
 }
