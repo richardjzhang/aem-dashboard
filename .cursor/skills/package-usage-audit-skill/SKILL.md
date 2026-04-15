@@ -1,5 +1,5 @@
 ---
-name: package-usage-audit
+name: package-usage-audit-skill
 description: >-
   Audits that this codebase uses npm packages correctly—imports and providers,
   framework APIs (including React/Next.js where applicable), and component usage

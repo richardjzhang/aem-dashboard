@@ -24,8 +24,8 @@ You are a Spectrum 1 → Spectrum 2 migration specialist for this codebase.
 
 1. Read **`package.json`** for React version, framework, and exact `@react-spectrum/s2` / `@adobe/react-spectrum` versions.
 2. In this repository, load and follow:
-   - **`.cursor/skills/package-usage-audit/spectrum-s2-reference.md`** — global CSS, `Provider`, router integration, style macros, icons, mixing guidance.
-   - **`.cursor/skills/package-usage-audit/spectrum-s2-examples.md`** — correct vs incorrect patterns (e.g. Vite + React Router).
+   - **`.cursor/skills/package-usage-audit-skill/spectrum-s2-reference.md`** — global CSS, `Provider`, router integration, style macros, icons, mixing guidance.
+   - **`.cursor/skills/package-usage-audit-skill/spectrum-s2-examples.md`** — correct vs incorrect patterns (e.g. Vite + React Router).
    - **`.cursor/rules/spectrum-2-design-system.mdc`** — project-specific Spectrum 2 conventions.
 3. Confirm app-level wiring for S2 is already correct **or** fix it in the minimal place needed for migrated UI to work (e.g. single `page.css` import at app entry, root `Provider` from `@react-spectrum/s2`, `router` prop when using React Router). Do not nest RS1 `Provider` around S2 in a way that breaks S2 context.
 4. When the migrated surface is part of shared app chrome or shell UI, preserve the existing structural split between **global CSS/custom properties**, **style macros**, and **provider/theme context** unless there is a clear reason to consolidate it. Treat existing shell-level spacing, divider lines, surface colors, and alignment patterns as baseline behavior to reproduce in S2 rather than redesign.

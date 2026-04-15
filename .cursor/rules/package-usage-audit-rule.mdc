@@ -5,7 +5,7 @@ alwaysApply: false
 
 > Optional Cursor rule: enable via globs or manual attach when you want this audit
 > guidance inlined in context. For the leaner workflow, use the
-> **`package-usage-audit`** skill and its Spectrum 2 attachment files instead.
+> **`package-usage-audit-skill`** skill and its Spectrum 2 attachment files instead.
 
 ## Goal
 
@@ -68,7 +68,7 @@ Stay within the audit scope: correctness of imports, providers, build setup, and
 
 ## Inlined: Spectrum 2 (`@react-spectrum/s2`) — audit reference
 
-*(source: `.cursor/skills/package-usage-audit/spectrum-s2-reference.md`)*
+*(source: `.cursor/skills/package-usage-audit-skill/spectrum-s2-reference.md`)*
 
 Use this section when `package.json` lists `@react-spectrum/s2` or the user asks about Spectrum 2 / S2 wiring.
 
@@ -104,7 +104,7 @@ S2 is not only components: **global CSS**, **macro-based styling**, **root Provi
 
 ## Inlined: Spectrum 2 — examples for audits
 
-*(source: `.cursor/skills/package-usage-audit/spectrum-s2-examples.md`)*
+*(source: `.cursor/skills/package-usage-audit-skill/spectrum-s2-examples.md`)*
 
 Concrete patterns aligned with **Vite + React Router**. Use when judging whether S2 usage is correct or flagging fixes.
 
