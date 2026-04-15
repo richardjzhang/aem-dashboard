@@ -36,14 +36,24 @@ You are a Spectrum 1 → Spectrum 2 migration specialist for this codebase.
 - **Root `Provider`**: from `@react-spectrum/s2`; set `locale`, `colorScheme`, and other props the app already relies on.
 - **Router**: If the app uses client-side routing, wire `Provider` with `router={{ navigate, useHref }}` per the examples doc—same router instance as the app.
 - **Styling**: Prefer S2 **style macros** from `@react-spectrum/s2/style` with `{ type: 'macro' }` where custom layout/chrome is needed to **match RS1** (including gaps, backgrounds, and borders); ensure the bundler has the **macro plugin** configured (e.g. `unplugin-parcel-macros`) so builds succeed and styles apply.
-- **Icons**: Import default icons from `@react-spectrum/s2/icons/<PascalName>` — not Spectrum 1 / `@spectrum-icons` paths unless the task explicitly requires a temporary bridge.
+- **Icons**: Replace Spectrum 1 icon packages with S2 icon entrypoints and reconcile sizing/styling (see **Icons (RS1 → S2)** below). Do not leave `@spectrum-icons/*` imports in a file that is otherwise fully migrated to `@react-spectrum/s2`, unless the user explicitly keeps that file on RS1 (for example an RS1-only shell widget).
 - **Props and spreads**: No invalid DOM passthrough; strip or narrow `...rest` before forwarding to S2 primitives. Fix TypeScript errors on migrated files—treat them as API mismatches, not noise.
 - **Hooks**: Do not edit existing hook files (`use*`, `*Hooks.ts`, `src/hooks/**`) unless the user explicitly asked to change **that** file and the change is strictly necessary; prefer migrating call sites or adding new hooks in **new** files per project rules.
+
+## Icons (RS1 → S2)
+
+Spectrum 1 code often imports SVG React icons from **`@spectrum-icons/workflow`** (generic UI glyphs) or **`@spectrum-icons/ui`** (UI-specific). Spectrum 2 exposes tree-shakeable defaults under **`@react-spectrum/s2/icons/<IconName>`** (PascalCase file segment, default export is the icon component).
+
+1. **Inventory**: For each file in scope, grep or read imports matching `@spectrum-icons/` and note the symbol basename (e.g. `workflow/Bell` → `Bell`).
+2. **Map**: Switch the import to `@react-spectrum/s2/icons/Bell` (or the exact name shipped in the installed `@react-spectrum/s2` package—verify in `node_modules/@react-spectrum/s2/icons` or TypeScript autocomplete). If an RS1 icon has no S2 equivalent, pick the closest documented S2 icon and call out the visual delta in the migration summary.
+3. **Usage**: Follow **`spectrum-s2-reference.md`** / **`spectrum-s2-examples.md`** for `iconStyle` from `@react-spectrum/s2/style` when RS1 relied on implicit size inside toolbars, list rows, or quiet buttons—match **visual size and alignment** to the RS1 `ActionButton`/`Menu`/`ListView` row, not just swap the import.
+4. **Color / states**: RS1 icons inherit color from Spectrum CSS variables on the parent; S2 icons follow the active `Provider` and component variant. After swapping imports, re-check **hover, focus, disabled, and selected** states where icons appear so contrast matches the RS1 baseline.
+5. **Intentional RS1-only surfaces**: If the user requires a component (e.g. app chrome) to stay on **`@adobe/react-spectrum` only**, keep **`@spectrum-icons/*`** for that file and **do not** mix in `@react-spectrum/s2/icons` or S2 `style` macros there—parity is RS1 + workflow icons end-to-end.
 
 ## Migration workflow
 
 1. **Establish a visual baseline** for the component or screen in scope: note RS1 structure (Flex/Grid/View stacks), **gap** and **margin** props, **padding**, **backgroundColor** / **UNSAFE_style** / custom CSS, **minWidth** / **maxWidth**, **width** / **height**, **UNSAFE_className**, and any **variant** / **quiet** / **emphasized** choices that affect appearance. If screenshots or design specs exist in the task, treat them as the source of truth alongside the RS1 code.
-2. Identify RS1 imports (`@adobe/react-spectrum`, `@spectrum-icons/*`, etc.) in the files in scope.
+2. Identify RS1 imports (`@adobe/react-spectrum`, `@spectrum-icons/*`, etc.) in the files in scope. **Treat icons as first-class migration work:** list every `@spectrum-icons/workflow/*`, `@spectrum-icons/ui/*`, and any other `@spectrum-icons/*` default import, then map each to the corresponding `@react-spectrum/s2/icons/<PascalCaseName>` export (name usually matches the last path segment; confirm against installed S2 types or `spectrum-s2-reference.md`). Replace RS1 patterns where icons sit inside `ActionButton`/`Button` children with the S2 component’s documented icon slot or child pattern so hit targets, color tokens, and quiet styles still match RS1.
 3. For each conceptual control (button, text field, dialog, etc.), choose the **S2 component** and props from types/docs—not from RS1 memory—then map **layout and visual props** so the rendered result matches the baseline (same outer dimensions, internal spacing, and color relationships).
 4. Rewrite JSX and event/callback shapes to match S2 (controlled vs uncontrolled, slots, labels, etc.).
 5. **Reconcile visuals**: compare migrated markup to the baseline list; adjust S2 layout components, gaps, padding, backgrounds, and typography-related props until the UI matches RS1 **as closely as the platform allows**. Do not “modernize” spacing or colors unless the user asked for a redesign.
