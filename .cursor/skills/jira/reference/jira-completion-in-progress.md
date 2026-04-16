@@ -2,6 +2,12 @@
 
 When Cursor finishes implementation or verification for work that came from **a specific Jira issue** (linked ticket, issue key in the chat, branch name, or explicit user reference):
 
+## Forbidden
+
+- **Do not** transition the issue to **Done**, **Closed**, or equivalent terminal status here. That is only allowed when the user **explicitly** requests closing or completing the ticket (see the main `SKILL.md` non-negotiable rules).
+
+## Steps
+
 1. **Treat the issue as still needing board cleanup** unless the user said otherwise.
 2. **Update Jira** so the issue lands in the **In Progress** column on the relevant board (use the project’s Atlassian/Jira integration or MCP tools available in this workspace).
 3. **How to transition**: Prefer the transition that places the issue in the **In Progress** column. Board columns map to statuses differently per project—pick the status or workflow transition that results in **In Progress** for that board; if multiple boards exist, use the board the user or ticket context implies.
