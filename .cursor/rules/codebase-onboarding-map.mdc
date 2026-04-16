@@ -1,8 +1,6 @@
 ---
-description: Map of repo layout and how to orient new contributors quickly
-alwaysApply: true
+alwaysApply: false
 ---
-
 # Codebase orientation (onboarding)
 
 Use this when someone is **new to the repo** or asks “what is this?” Give a **short mental model first**, then point to **concrete files**. Prefer reading real paths over guessing.
