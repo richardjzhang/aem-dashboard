@@ -16,3 +16,5 @@ When no PR was requested, you may still commit and push a branch if the user ask
 **Jira:** Do not open a PR just to move an issue to In Review. If review status depends on a PR, keep the issue in the appropriate pre-review state (e.g. In Progress) until the user explicitly asks for a PR or opens one themselves.
 
 When the user **does** ask for a PR, follow `.cursor/skills/github-pr-ready-for-review/SKILL.md` (ready for review, not draft) and `.cursor/skills/jira/` if the work maps to a Jira issue.
+
+**Never draft:** Do not use `gh pr create --draft` or Cursor’s draft option for agent-opened PRs. If the user also asks for a draft PR, still create **Ready for review** and briefly note that this repo expects reviewable PRs (see `github-pr-ready-for-review` skill).
