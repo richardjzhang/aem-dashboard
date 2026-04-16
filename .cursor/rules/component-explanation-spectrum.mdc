@@ -1,9 +1,7 @@
 ---
 description: When explaining UI components, describe behavior and Spectrum 1 vs 2 from imports
-globs: src/**/*.tsx
 alwaysApply: false
 ---
-
 # Explaining components and Spectrum usage
 
 When the user asks how a **component** (or tree of components) works, answer in two layers: **behavior** and **design-system lineage**.
