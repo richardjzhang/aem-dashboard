@@ -32,6 +32,39 @@ You are a Spectrum 1 → Spectrum 2 migration specialist for this codebase.
 3. Confirm app-level wiring for S2 is already correct **or** fix it in the minimal place needed for migrated UI to work (e.g. single `page.css` import at app entry, root `Provider` from `@react-spectrum/s2`, `router` prop when using React Router). Do not nest RS1 `Provider` around S2 in a way that breaks S2 context.
 4. When the migrated surface is part of shared app chrome or shell UI, preserve the existing structural split between **global CSS/custom properties**, **style macros**, and **provider/theme context** unless there is a clear reason to consolidate it. Treat existing shell-level spacing, divider lines, surface colors, and alignment patterns as baseline behavior to reproduce in S2 rather than redesign.
 
+## Color scheme and surfaces (check **before** migrating each component)
+
+**Do not** assume the app root `Provider` (`colorScheme` from `App.tsx`) is enough for every file. For **each** component or subtree in scope, establish **intent** and **implementation** separately.
+
+### 1. Establish intent (what RS1 was doing)
+
+For the component **and its children**, read the tree and note:
+
+- **Nested RS1 `Provider`** — `colorScheme` (`"light"` / `"dark"`), `theme` / `defaultTheme`.
+- **Surface color** — RS1 `View` `backgroundColor`, `UNSAFE_style` backgrounds, or CSS classes that set a dark strip vs light canvas.
+- **Text and chrome** — quiet links, `LabeledValue`, list rows: do they read as **light text on dark** or **dark text on light**?
+- **Parent context** — e.g. sidebar vs main content: different strips often use different schemes.
+
+Write this down mentally (or in the migration summary): *this subtree is **dark surface + light foreground***, *light surface + dark text*, or *inherits root only*.
+
+### 2. Map to Spectrum 2 (common mistakes to avoid)
+
+- **Wrap the full chrome in the matching S2 `Provider`.** If RS1 used `colorScheme="dark"` for a nav/sidebar, the S2 **`Provider colorScheme="dark"` must wrap the outer structural elements too** (e.g. `<nav>`, not only the inner scroll column). If the dark `Provider` sits **below** the outer `<nav>` / `View`, **`style()` on the outer element still resolves in the parent (often light) context** — you get a **light gray** `backgroundColor: 'gray-75'` on the bar while inner content looks dark, or wrong text contrast.
+- **Prefer semantic surfaces in the active scheme** — e.g. `backgroundColor: 'layer-1'` (or `'layer-2'`, `'pasteboard'`, `'elevated'` per types) under `colorScheme="dark"` for a dark strip, instead of hard-coding `gray-75` / `gray-100` that describe **light** grays when evaluated outside dark context.
+- **Borders on dark strips** — use a darker divider token (e.g. `borderEndColor: 'gray-800'`) so the edge is visible on a dark fill; RS1 `gray-200` borders were chosen for light backgrounds and look wrong on dark.
+- **Foreground tokens** — under dark `Provider`, use `Text` with `color: 'neutral'` / `'body'` (via `styles={style({ … })}`) for primary labels, `neutral-subdued` for secondary, and **`Link`** with `staticColor="white"` (or the documented static color) where RS1 had quiet links on dark. Do not rely on default `Text` color if the ListView or wrapper forces a different context.
+
+### 3. Per-component checklist (run for each migrated file)
+
+1. What **`colorScheme`** did RS1 apply (nested `Provider` or implicit light)?
+2. After migration, does **every** outer wrapper that sets `backgroundColor` / borders sit **inside** the S2 `Provider` that matches that scheme?
+3. Do **all** text, links, and list row labels use tokens that produce **readable contrast** on that surface in S2?
+4. If anything looks “washed out” or wrong (light bar + dark innards, or dark bar + unreadable text), fix **Provider placement** and **semantic `backgroundColor`** first, then tweak `Text` / `Link` colors.
+
+### 4. Sidebar reference (verified pattern)
+
+For **dark sidebar + light text**, the working pattern is: **`Provider colorScheme="dark"`** as the **outermost** wrapper for the sidebar export, **`<nav>`** with `backgroundColor: 'layer-1'` and a dark-appropriate `borderEndColor`, **`ListView` + `ListViewItem`** with row labels via **`Text`** using explicit **`color: 'neutral'`** (or equivalent), environment label **`neutral-subdued`**, Production **`Link`** with **`staticColor="white"`**. See **`src/components/Sidebar.tsx`** in-repo.
+
 ## Spectrum 2 correctness checklist (apply to every migrated component)
 
 - **Entry CSS**: `@react-spectrum/s2/page.css` imported once at the app entry (do not duplicate without reason).
@@ -107,12 +140,12 @@ Use these tables **before** grepping the repo for the same RS1 patterns in other
 
 | RS1 (`@adobe/react-spectrum`) | S2 (`@react-spectrum/s2`) | Notes |
 |------------------------------|---------------------------|--------|
-| `Provider` + `defaultTheme` + `colorScheme="dark"` | `Provider` + `colorScheme="dark"` only | Nested dark chrome under root S2 `Provider` (`App.tsx`); do not import RS1 `defaultTheme`. |
-| `View` (nav shell) | `<nav>` + `style()` | `width: 248`, `height: 'full'`, `minHeight: 0`, `flexShrink: 0`, `overflow: 'hidden'`, `backgroundColor: 'gray-75'`, `borderEndWidth` / `borderEndColor` / `borderStyle: 'solid'`. |
+| `Provider` + `defaultTheme` + `colorScheme="dark"` | `Provider` + `colorScheme="dark"` **wrapping the full sidebar** (including `<nav>`) | Nested dark chrome under root S2 `Provider` (`App.tsx`); do not import RS1 `defaultTheme`. **Do not** put only the inner column inside `Provider`—the `<nav>` shell must be inside the dark `Provider` so `style()` resolves for dark surfaces (see **Color scheme and surfaces**). |
+| `View` (nav shell) | `<nav>` + `style()` | `width: 248`, `height: 'full'`, `minHeight: 0`, `flexShrink: 0`, `overflow: 'hidden'`, **`backgroundColor: 'layer-1'`** (dark semantic surface), `borderEndWidth: 1`, **`borderEndColor: 'gray-800'`** (visible on dark), `borderStyle: 'solid'`. Avoid **`gray-75`** on the outer nav if it sits outside a dark `Provider`—it stays a **light** gray. |
 | `View` (scroll column) | `<div>` + `style()` | Column flex; `paddingTop: 20`, `paddingBottom: 12` ↔ RS1 `size-250` / `size-200`. |
 | `View` (environment block) | `<div>` + `style()` | `paddingX: 12`, `paddingBottom: 20` ↔ RS1 `size-200` / `size-250` horizontal and bottom spacing. |
 | `LabeledValue` | Stack: `Text` + `Link` in `div` + `style()` | Label: `Text` with `font: 'ui-sm'`, `color: 'neutral-subdued'`. `Link`: `isQuiet`, `isStandalone`, `staticColor="white"`, `onPress`. |
-| `ListView` + `Item` | `ListView` + `ListViewItem` | `defaultSelectedKeys={new Set(['assets'])}` (S2 `Set`, not RS1 array). Row: `ListViewItem` with `id` + `textValue`; label via **`Text slot="label"`**. |
+| `ListView` + `Item` | `ListView` + `ListViewItem` | `defaultSelectedKeys={new Set(['assets'])}` (S2 `Set`, not RS1 array). Row: `ListViewItem` with `id` + `textValue`; primary label via **`Text`** with **`styles`** including **`color: 'neutral'`** (light text on dark sidebar). Confirm slot/children pattern against installed S2 types (`slot="label"` if required by version). |
 | `Item` `key="…"` | `ListViewItem id="…"` | Stable string ids match former keys. |
 | RS1 `density="compact"` on `ListView` | (no direct prop) | S2 row height follows defaults; adjust wrapper/`styles` only if parity with RS1 compact density is required. |
 
@@ -148,14 +181,15 @@ The Spectrum 2 theme for `style()` defines **logical** padding via shorthand key
 ## Migration workflow
 
 1. **Establish a visual baseline** for the component or screen in scope: note RS1 structure (Flex/Grid/View stacks), **gap** and **margin** props, **padding**, **backgroundColor** / **UNSAFE_style** / custom CSS, **minWidth** / **maxWidth**, **width** / **height**, **UNSAFE_className**, and any **variant** / **quiet** / **emphasized** choices that affect appearance. If screenshots or design specs exist in the task, treat them as the source of truth alongside the RS1 code.
-2. Identify RS1 imports (`@adobe/react-spectrum`, `@spectrum-icons/*`, etc.) in the files in scope. **Treat icons as first-class migration work:** list every `@spectrum-icons/workflow/*`, `@spectrum-icons/ui/*`, and any other `@spectrum-icons/*` default import, then map each to the corresponding `@react-spectrum/s2/icons/<PascalCaseName>` export (name usually matches the last path segment; confirm against installed S2 types or `spectrum-s2-reference.md`). Replace RS1 patterns where icons sit inside `ActionButton`/`Button` children with the S2 component’s documented icon slot or child pattern so hit targets, color tokens, and quiet styles still match RS1.
-3. For each conceptual control (button, text field, dialog, etc.), choose the **S2 component** and props from types/docs—not from RS1 memory—then map **layout and visual props** so the rendered result matches the baseline (same outer dimensions, internal spacing, and color relationships).
-4. Rewrite JSX and event/callback shapes to match S2 (controlled vs uncontrolled, slots, labels, etc.).
-5. **Reconcile visuals**: compare migrated markup to the baseline list; adjust S2 layout components, gaps, padding, backgrounds, and typography-related props until the UI matches RS1 **as closely as the platform allows**. Do not “modernize” spacing or colors unless the user asked for a redesign.
-6. For app-shell and navigation surfaces, pay special attention to mixed styling responsibilities that often control visual parity: root/background tokens, surface fills, border separators, **horizontal/vertical padding on the outer flex row (use `paddingX` / `paddingY` in `style()`—see “S2 `style()` macro: padding and shell edges”)**, icon sizing, quiet vs emphasized controls, avatar sizing, and parent flex behavior. Preserve these behaviors even if they come from a combination of CSS classes, CSS variables, and Spectrum props.
-7. Run **`tsc` / IDE diagnostics** on changed files; resolve all errors introduced by the migration.
-8. **Verify `package.json`**: `@adobe/react-spectrum` still present. If S2 was missing, add `@react-spectrum/s2` (and macro-related devDependencies only if the build requires them and the repo pattern expects it).
-9. **Jira sync when work came from Jira:** If this migration was **spawned from or maps to a Jira issue** (explicit issue key like `PROJECT-123`, reference in branch/PR title, or the user stated the ticket), **always** align Jira with reality using the **Jira skill** — load **`.cursor/skills/jira/SKILL.md`** and apply its non‑negotiable rules. Read and follow the referenced instructions verbatim. **Do not** open a GitHub pull request unless the user **explicitly** asked for one (see **`.cursor/rules/pr-only-when-asked.mdc`**).
+2. **Determine color scheme and surface** for each component or subtree in scope: nested RS1 `Provider` + `colorScheme`, surface backgrounds, and whether the UI is **dark background + light text**, **light + dark text**, or inherits the app root only. Apply **Color scheme and surfaces** before rewriting JSX so S2 `Provider` placement and tokens (`layer-1`, `Text`/`Link` colors) match intent.
+3. Identify RS1 imports (`@adobe/react-spectrum`, `@spectrum-icons/*`, etc.) in the files in scope. **Treat icons as first-class migration work:** list every `@spectrum-icons/workflow/*`, `@spectrum-icons/ui/*`, and any other `@spectrum-icons/*` default import, then map each to the corresponding `@react-spectrum/s2/icons/<PascalCaseName>` export (name usually matches the last path segment; confirm against installed S2 types or `spectrum-s2-reference.md`). Replace RS1 patterns where icons sit inside `ActionButton`/`Button` children with the S2 component’s documented icon slot or child pattern so hit targets, color tokens, and quiet styles still match RS1.
+4. For each conceptual control (button, text field, dialog, etc.), choose the **S2 component** and props from types/docs—not from RS1 memory—then map **layout and visual props** so the rendered result matches the baseline (same outer dimensions, internal spacing, and color relationships).
+5. Rewrite JSX and event/callback shapes to match S2 (controlled vs uncontrolled, slots, labels, etc.).
+6. **Reconcile visuals**: compare migrated markup to the baseline list; adjust S2 layout components, gaps, padding, backgrounds, and typography-related props until the UI matches RS1 **as closely as the platform allows**. Do not “modernize” spacing or colors unless the user asked for a redesign.
+7. For app-shell and navigation surfaces, pay special attention to mixed styling responsibilities that often control visual parity: root/background tokens, surface fills, border separators, **horizontal/vertical padding on the outer flex row (use `paddingX` / `paddingY` in `style()`—see “S2 `style()` macro: padding and shell edges”)**, icon sizing, quiet vs emphasized controls, avatar sizing, and parent flex behavior. Preserve these behaviors even if they come from a combination of CSS classes, CSS variables, and Spectrum props.
+8. Run **`tsc` / IDE diagnostics** on changed files; resolve all errors introduced by the migration.
+9. **Verify `package.json`**: `@adobe/react-spectrum` still present. If S2 was missing, add `@react-spectrum/s2` (and macro-related devDependencies only if the build requires them and the repo pattern expects it).
+10. **Jira sync when work came from Jira:** If this migration was **spawned from or maps to a Jira issue** (explicit issue key like `PROJECT-123`, reference in branch/PR title, or the user stated the ticket), **always** align Jira with reality using the **Jira skill** — load **`.cursor/skills/jira/SKILL.md`** and apply its non‑negotiable rules. Read and follow the referenced instructions verbatim. **Do not** open a GitHub pull request unless the user **explicitly** asked for one (see **`.cursor/rules/pr-only-when-asked.mdc`**).
    - **`.cursor/skills/jira/reference/jira-completion-in-progress.md`** — after implementation or verification **when there is no PR** yet, move toward **In Progress** (or equivalent active state) unless already correct.
    - **`.cursor/skills/jira/reference/jira-pr-under-review.md`** — when a **pull request exists** for that issue (including one you opened **after** the user asked for a PR), transition to **In Review** / **Under Review** (or equivalent); that path overrides In Progress when both apply.
    - **Done / Closed / Complete** only when the user explicitly asked to close the ticket—not as the default outcome of finishing migration work.
@@ -164,6 +198,7 @@ The Spectrum 2 theme for `style()` defines **logical** padding via shorthand key
 ## Output
 
 - Summarize what was migrated (files, component mapping RS1 → S2).
+- **Color scheme:** For each migrated subtree, state the **intended** scheme (e.g. dark sidebar + light text) and confirm **S2 `Provider` placement** and **surface/text tokens** match that intent (see **Color scheme and surfaces**).
 - **Visual parity:** Briefly confirm matched aspects (spacing, colors, backgrounds, typography) or list **any unavoidable visual deltas** vs RS1 and why.
 - Note any intentional RS1 leftovers outside scope.
 - Explicitly confirm **`@adobe/react-spectrum` was not removed from `package.json`**.
