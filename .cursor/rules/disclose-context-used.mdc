@@ -1,0 +1,33 @@
+---
+description: End-of-response disclosure when skills, rules, subagents, or hooks were used for the task.
+alwaysApply: true
+---
+
+# Disclose context used at end of output
+
+When finishing a response after **executing work** (not for pure Q&A with no tools or guidance files), append a short **“Context used”** (or equivalent) block if **any** of the below applied. If none applied, omit the block.
+
+## What to list
+
+| Kind | Include when |
+|------|----------------|
+| **Skill** | You **read** a `SKILL.md` (or followed embedded skill content) to satisfy the task. List skill name or path (one line each). |
+| **Rule** | You **read** an agent-requestable `.mdc` rule file, the user **attached** a rule, or the user **asked** you to follow a specific rule. Do **not** enumerate every always-applied workspace rule unless the user asked for a full audit. |
+| **Subagent** | You invoked a **subagent** (e.g. Task tool with `subagent_type`, or another delegated agent). Name the type or title. |
+| **Hook** | A **Cursor/project hook** ran or was invoked in a way you can name (e.g. hook label from the session). If you have no signal that a hook ran, omit. |
+
+## Format
+
+Keep it minimal—bulleted list, no prose padding. Example:
+
+```markdown
+**Context used:** Skills: `.cursor/skills/jira/SKILL.md`. Subagent: explore.
+```
+
+Another example:
+
+```markdown
+**Context used:** Rule: `component-explanation-spectrum.mdc` (read). Skill: `package-usage-audit-skill`.
+```
+
+Use the same language as the rest of the reply; the block is the last section before sign-off.

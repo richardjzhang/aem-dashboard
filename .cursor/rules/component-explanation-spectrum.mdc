@@ -1,4 +1,5 @@
 ---
+description: Use when the user asks to explain, walk through, or describe how a React component works or is structured—especially files under src/components or questions like "what does X do", "how is it built", "explain Sidebar/TopBar/AppShell", component tree, props, or Spectrum usage. Answer with behavior plus Spectrum 1 vs 2 from imports per this rule.
 alwaysApply: false
 ---
 # Explaining components and Spectrum usage
