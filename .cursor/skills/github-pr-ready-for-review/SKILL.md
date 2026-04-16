@@ -2,8 +2,10 @@
 name: github-pr-ready-for-review
 description: >-
   Ensures GitHub pull requests opened from Cursor (Cloud or local) or via the
-  agent are **Ready for review**, not **Draft**. Use whenever creating a PR,
-  pushing a branch for review, or the user asks to open a pull request.
+  agent are **Ready for review**, not **Draft** (unless the user asked for draft).
+  For Jira-mapped work: branch names include the issue key, and after PR creation the issue moves
+  to **In Review** per `.cursor/skills/jira/`. Use whenever creating a PR, pushing a branch for
+  review, or the user asks to open a pull request.
 ---
 
 # GitHub PR: ready for review (not draft)
@@ -14,6 +16,14 @@ Apply this skill whenever:
 
 - The agent or user is **creating a GitHub pull request** (branch pushed, `gh pr create`, Cursor PR / review UI, or “open a PR”).
 - Work is meant to be **reviewed**, not held as a private draft—unless the user **explicitly** asked for a draft PR.
+
+## Jira-linked work (this repo)
+
+When the pull request maps to a **specific Jira issue** (key in chat, branch, or PR title/body):
+
+1. **Branch name:** Create the branch with the issue key in the name (see `.cursor/skills/jira/reference/jira-pr-under-review.md`). Do not use a generic slug-only branch for mapped work.
+2. **After the PR is created** (success from `gh pr create` or confirmed URL): **transition that Jira issue to In Review** / **Under Review** per `.cursor/skills/jira/` (Atlassian MCP: `transitionJiraIssue`), unless the user asked not to update Jira. GitHub does not do this automatically for you.
+3. Then apply the **draft vs ready** rules below. (If the user asked for a **draft** PR, still transition Jira to In Review unless they asked to hold Jira too.)
 
 ## Mandatory behavior
 
