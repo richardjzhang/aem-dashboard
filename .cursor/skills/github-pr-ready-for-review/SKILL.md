@@ -1,21 +1,25 @@
 ---
 name: github-pr-ready-for-review
 description: >-
-  Ensures GitHub pull requests opened from Cursor (Cloud or local) or via the
-  agent are **Ready for review**, not **Draft** (unless the user asked for draft).
-  For Jira-mapped work: branch names include the issue key, and after PR creation the issue moves
-  to **In Review** per `.cursor/skills/jira/`. Use whenever creating a PR, pushing a branch for
-  review, or the user asks to open a pull request.
+  When the user explicitly asks to create or open a PR: ensure it is **Ready for review**, never **Draft**.
+  For Jira-mapped work: branch names include the issue key, and after PR creation the issue moves to **In Review** per `.cursor/skills/jira/`.
+  Do not load this skill to justify creating a PR—the user must ask for a PR first; see `.cursor/rules/pr-only-when-asked.mdc`.
 ---
 
-# GitHub PR: ready for review (not draft)
+# GitHub PR: always ready for review (never draft)
+
+## Prerequisites
+
+**Only create a PR when the user explicitly asked** to open, create, or file a pull request (see `.cursor/rules/pr-only-when-asked.mdc`). This skill governs **how** to open a PR once that request exists; it does **not** authorize opening a PR without it.
 
 ## Trigger
 
-Apply this skill whenever:
+Apply this skill when **both** are true:
 
-- The agent or user is **creating a GitHub pull request** (branch pushed, `gh pr create`, Cursor PR / review UI, or “open a PR”).
-- Work is meant to be **reviewed**, not held as a private draft—unless the user **explicitly** asked for a draft PR.
+1. The user **explicitly** requested a PR (or is completing a flow they started to open one), and
+2. You are **creating** that pull request (`gh pr create`, Cursor PR / review UI, or equivalent).
+
+Then ensure the PR lands in a **reviewable** state—this repo does **not** use agent-opened **draft** PRs.
 
 ## Jira-linked work (this repo)
 
@@ -23,29 +27,28 @@ When the pull request maps to a **specific Jira issue** (key in chat, branch, or
 
 1. **Branch name:** Create the branch with the issue key in the name (see `.cursor/skills/jira/reference/jira-pr-under-review.md`). Do not use a generic slug-only branch for mapped work.
 2. **After the PR is created** (success from `gh pr create` or confirmed URL): **transition that Jira issue to In Review** / **Under Review** per `.cursor/skills/jira/` (Atlassian MCP: `transitionJiraIssue`), unless the user asked not to update Jira. GitHub does not do this automatically for you.
-3. Then apply the **draft vs ready** rules below. (If the user asked for a **draft** PR, still transition Jira to In Review unless they asked to hold Jira too.)
+3. Apply the **ready-for-review** rules below so the PR is never left as a draft.
 
 ## Mandatory behavior
 
 1. **Prefer the GitHub CLI** when the agent creates the PR so the mode is explicit:
-   - Use `gh pr create` **without** the `--draft` flag (non-draft is the default; do not add `--draft`).
-   - If you need to be explicit, you can pass `--title` / `--body` / `--base` as required; still **omit** `--draft`.
+   - Use `gh pr create` **without** the `--draft` flag (non-draft is the default; **never** add `--draft`).
+   - Pass `--title` / `--body` / `--base` as required; still **omit** `--draft`.
 
 2. **If the PR already exists and is a draft** (e.g. Cursor’s UI defaulted to draft, or a prior run used `--draft`):
    - Run `gh pr ready` for the current branch, or `gh pr ready <number>` if you know the PR number.
    - Confirm success from the command output (or open the PR URL and verify the **Ready for review** state).
 
-3. **If the user explicitly wants a draft PR** (they said “draft”, “WIP”, or “don’t request review yet”):
-   - Only then use `gh pr create --draft` or leave the PR as draft; do **not** run `gh pr ready`.
+3. **No draft PRs:** Do **not** open or keep a draft PR to mean “WIP” or “not ready yet.” If the user asks for a draft PR, follow this policy anyway: create or convert to **Ready for review** and explain briefly that this project expects reviewable PRs from agents.
 
 ## Cursor UI (local or Cloud)
 
 - If the flow uses Cursor’s **built-in** PR composer and it offers a **Draft** checkbox or defaults to draft: **turn off draft** before submitting, **or** after creation run `gh pr ready` from the repo root so the PR is ready for review.
-- Do not assume the UI default; **verify** the PR is not in draft when the goal is review.
+- Do not assume the UI default; **verify** the PR is not in draft.
 
 ## Why this exists
 
-Draft PRs do not signal “ready for review” to many teams and automation. This project expects PRs from Cursor agents to be **review-ready** unless the user opts into a draft.
+Draft PRs do not signal “ready for review” to many teams and automation. **All** PRs opened here—including by agents—must be **Ready for review**, not Draft.
 
 ## Quick reference
 

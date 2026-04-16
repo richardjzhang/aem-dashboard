@@ -1,6 +1,6 @@
 # Jira: PR opened → In Review / Under Review
 
-When a **GitHub pull request is created** for work that maps to a **specific Jira issue**—including when the **agent** creates the PR via `gh pr create`, a push-then-PR flow, or Cursor’s PR UI—treat that the same as any other opened PR: **sync Jira** once the PR exists (URL or number confirmed).
+When a **GitHub pull request exists** for work that maps to a **specific Jira issue**, **sync Jira** once the PR is confirmed (URL or number). That includes PRs the **agent** opens **only after** the user explicitly asked for a PR (see `.cursor/rules/pr-only-when-asked.mdc`—the agent does not open PRs on its own).
 
 ## Branch names (mandatory for agent-created branches)
 
@@ -15,7 +15,7 @@ If you already created a branch **without** the key, fix forward: rename/recreat
 ## After the PR exists
 
 1. **Update Jira** so the issue lands in **In Review** / **Under Review** (or the workflow status your board uses for that column—e.g. "Code Review"). Use the Atlassian MCP in this workspace (`getTransitionsForJiraIssue` → `transitionJiraIssue` with `cloudId` from `getAccessibleAtlassianResources`) or another integration the user relies on.
-2. **Order of operations:** Create branch (with issue key) → commit → push → **create PR** → **then transition Jira**. Do not assume GitHub notifies Jira; the agent must perform the transition unless the user said not to change Jira.
+2. **Order of operations:** Create branch (with issue key) → commit → push → **create PR** (when the user asked for a PR) → **then transition Jira**. Do not assume GitHub notifies Jira; the agent must perform the transition unless the user said not to change Jira.
 3. **How to transition**: Pick the transition or status that matches the **review** column on the relevant board; names vary by project.
 4. **If transition fails** (permissions, workflow, or unknown mapping): describe what you tried, report the error, and give the issue key plus target column so the user can move it manually.
 5. **Skip** if the user asked not to change Jira state, or if no Jira issue is tied to the PR/task.
@@ -25,4 +25,4 @@ Example: Opened PR for branch cursor/KAN-71-migrate-components → transition KA
 after the PR exists (link in chat or confirmed creation).
 ```
 
-**Note:** Other rules may still apply when **no** PR exists yet (e.g. local completion only). Once a PR exists for the issue, prefer reflecting **review** state in Jira as above.
+**Note:** When **no** PR exists yet, follow **`reference/jira-completion-in-progress.md`** (In Progress). Once a PR exists for the issue, this doc takes precedence: sync **In Review** / **Under Review**, not only In Progress.

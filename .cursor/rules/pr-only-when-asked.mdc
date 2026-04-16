@@ -1,0 +1,18 @@
+---
+description: Only create GitHub pull requests when the user explicitly asks to open or create a PR.
+alwaysApply: true
+---
+
+# Pull requests: explicit request only
+
+Do **not** create a pull request (`gh pr create`, Cursor’s PR flow, or equivalent) unless the user **explicitly** asks to open, create, or file a PR.
+
+**Treat as explicit:** clear wording such as “open a PR”, “create a pull request”, “file a PR”, “put this up for review on GitHub”, or “create the PR”.
+
+**Do not treat as explicit:** completing a task, migrating code, pushing a branch, fixing CI, or syncing Jira—unless the user also clearly requested a PR in that message or thread.
+
+When no PR was requested, you may still commit and push a branch if the user asked for that; otherwise stop after the requested work and mention that they can ask for a PR when they want one.
+
+**Jira:** Do not open a PR just to move an issue to In Review. If review status depends on a PR, keep the issue in the appropriate pre-review state (e.g. In Progress) until the user explicitly asks for a PR or opens one themselves.
+
+When the user **does** ask for a PR, follow `.cursor/skills/github-pr-ready-for-review/SKILL.md` (ready for review, not draft) and `.cursor/skills/jira/` if the work maps to a Jira issue.
