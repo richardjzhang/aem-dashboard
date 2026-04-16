@@ -1,0 +1,47 @@
+---
+description: Map of repo layout and how to orient new contributors quickly
+alwaysApply: true
+---
+
+# Codebase orientation (onboarding)
+
+Use this when someone is **new to the repo** or asks “what is this?” Give a **short mental model first**, then point to **concrete files**. Prefer reading real paths over guessing.
+
+## What this project is
+
+- **Stack**: Single-package **Vite 8** + **React 19** + **TypeScript** SPA (`package.json` at repo root — not a monorepo).
+- **Routing**: **React Router v7** (`react-router`) — see route table in `src/App.tsx`.
+
+### React Spectrum: two versions (read this first)
+
+This repo ships **both** Adobe React Spectrum generations. **Do not assume** a single import path.
+
+| Package | Version | Role |
+|--------|---------|------|
+| `@react-spectrum/s2` | **Spectrum 2** | **Current direction**: root `Provider` in `src/App.tsx`, `@react-spectrum/s2/page.css` in `src/main.tsx`, and most product UI (e.g. `AssetsPage`, `AppShell`, `components/assets/*`). Uses `style` from `@react-spectrum/s2/style` (Parcel macro). |
+| `@adobe/react-spectrum` | **Spectrum 1** | **Legacy**: still imported in some files (e.g. `Sidebar.tsx`, `TopBar.tsx`). New or heavily touched UI should **move to S2**, per `.cursor/rules/spectrum-2-design-system.mdc`. |
+
+When onboarding someone: **call out this split explicitly** — search `from '@adobe/react-spectrum'` vs `from '@react-spectrum/s2'` to see which files are still on v1. Full UI rules for new work are in `.cursor/rules/spectrum-2-design-system.mdc`.
+
+## Read in this order (fast path)
+
+1. **`package.json`** — scripts (`dev`, `build`, `lint`) and dependencies.
+2. **`src/main.tsx`** — app bootstrap: Spectrum `page.css`, `globals.css`, mounts `App`.
+3. **`src/App.tsx`** — `BrowserRouter`, Spectrum `Provider` with router integration, **route definitions** (e.g. `/` → main page).
+4. **`src/components/`** — feature UI: e.g. `AppShell.tsx` (layout: sidebar, top bar, content), page components like `AssetsPage.tsx`, and colocated feature folders such as `assets/` (`AssetCard`, modals, panels, `presentation.ts`).
+5. **`src/data/`** — static or mock data and types (e.g. `assets.ts` for `AssetRecord` and sample data).
+6. **`vite.config.ts`** — bundler plugins (React, Parcel macros for S2 `style`, locale optimization).
+
+## How to explain “where things live”
+
+- **New screen or route** → `src/App.tsx` (route) + new/updated component under `src/components/`.
+- **Layout chrome** (shell, nav) → `AppShell.tsx`, `Sidebar.tsx`, `TopBar.tsx`.
+- **Domain types / seed data** → `src/data/*.ts`.
+- **Project conventions for the agent** → `.cursor/rules/*.mdc` (Spectrum 2 policy and **no new Spectrum 1** in `spectrum-2-design-system.mdc`, package usage, hooks policy in `protect-hook-files.mdc`).
+
+## Agent behavior
+
+- **Search the tree** (`src/`, config files) when listing modules; **do not** assume folders that are not present.
+- **Spectrum inventory**: when explaining UI, mention **both** `@react-spectrum/s2` and `@adobe/react-spectrum` usage (e.g. ripgrep those strings under `src/`) so newcomers know the migration boundary.
+- Give **one paragraph summary** + **bullet map** + **3–5 file links** (paths) so a human can open the right files immediately.
+- If the README is generic template text, **still** rely on `package.json` + `src/` as the source of truth.
