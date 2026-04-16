@@ -1,9 +1,18 @@
 ---
 name: jira
-description: Project Jira usage—board transitions after implementation or when a PR exists; creating issues with severity and work-type labels; use Atlassian/Jira or MCP and follow the reference instructions verbatim. Never move issues to Done/Closed without explicit user request.
+description: >-
+  Atlassian Jira for this repo: issue keys (e.g. KAN-71, PROJECT-123), tickets, board status,
+  workflow transitions (In Progress, In Review, Under Review), linking PRs to issues, JQL search,
+  assignee, sprint, and Atlassian MCP (cloudId, searchJiraIssuesUsingJql, transitionJiraIssue,
+  getJiraIssue, createJiraIssue). After implementing or verifying work from a mapped issue, sync
+  Jira per reference/jira-completion-in-progress.md; with an open PR, prefer In Review per
+  reference/jira-pr-under-review.md. Creating issues: reference/jira-task-labels.md. Never move to
+  Done, Closed, or Complete unless the user explicitly asked to close or complete that issue.
 ---
 
 # Jira
+
+**Load this skill** when the conversation involves any of: **Jira**, **Atlassian**, an **issue key** (`PROJECT-123`), a **ticket** tied to dev work, **Jira MCP** tools, **JQL**, **branch/PR titles** with issue keys, **board** or **workflow** updates, or **creating** an issue/task.
 
 Use this skill whenever work involves **Jira** in this project: a mapped issue (key in chat, branch, PR, or explicit reference), or **creating** an issue or task.
 
