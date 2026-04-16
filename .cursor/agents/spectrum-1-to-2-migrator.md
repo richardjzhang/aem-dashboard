@@ -99,6 +99,35 @@ Use this table and notes as the **first** stop when choosing S2 replacements. **
 
 Other workflow icons: same rule — **`@react-spectrum/s2/icons/<PascalCaseName>`** matching the last path segment; confirm the file exists under `node_modules/@react-spectrum/s2/icons/` if unsure.
 
+### App shell — `Sidebar.tsx` and `TopBar.tsx` (verified, KAN-71)
+
+Use these tables **before** grepping the repo for the same RS1 patterns in other files. File paths: `src/components/Sidebar.tsx`, `src/components/TopBar.tsx` (composed from `AppShell.tsx`).
+
+#### `Sidebar.tsx`
+
+| RS1 (`@adobe/react-spectrum`) | S2 (`@react-spectrum/s2`) | Notes |
+|------------------------------|---------------------------|--------|
+| `Provider` + `defaultTheme` + `colorScheme="dark"` | `Provider` + `colorScheme="dark"` only | Nested dark chrome under root S2 `Provider` (`App.tsx`); do not import RS1 `defaultTheme`. |
+| `View` (nav shell) | `<nav>` + `style()` | `width: 248`, `height: 'full'`, `minHeight: 0`, `flexShrink: 0`, `overflow: 'hidden'`, `backgroundColor: 'gray-75'`, `borderEndWidth` / `borderEndColor` / `borderStyle: 'solid'`. |
+| `View` (scroll column) | `<div>` + `style()` | Column flex; `paddingTop: 20`, `paddingBottom: 12` ↔ RS1 `size-250` / `size-200`. |
+| `View` (environment block) | `<div>` + `style()` | `paddingX: 12`, `paddingBottom: 20` ↔ RS1 `size-200` / `size-250` horizontal and bottom spacing. |
+| `LabeledValue` | Stack: `Text` + `Link` in `div` + `style()` | Label: `Text` with `font: 'ui-sm'`, `color: 'neutral-subdued'`. `Link`: `isQuiet`, `isStandalone`, `staticColor="white"`, `onPress`. |
+| `ListView` + `Item` | `ListView` + `ListViewItem` | `defaultSelectedKeys={new Set(['assets'])}` (S2 `Set`, not RS1 array). Row: `ListViewItem` with `id` + `textValue`; label via **`Text slot="label"`**. |
+| `Item` `key="…"` | `ListViewItem id="…"` | Stable string ids match former keys. |
+| RS1 `density="compact"` on `ListView` | (no direct prop) | S2 row height follows defaults; adjust wrapper/`styles` only if parity with RS1 compact density is required. |
+
+#### `TopBar.tsx`
+
+| RS1 (`@adobe/react-spectrum` / icons) | S2 (`@react-spectrum/s2`) | Notes |
+|---------------------------------------|---------------------------|--------|
+| `View` + `UNSAFE_style` (full-width header row) | `<div>` + `style()` | `boxSizing: 'border-box'`, flex row, `justifyContent: 'space-between'`, **`paddingX` / `paddingY`** (24 / 12 from `topBarLayout`), `columnGap`, `minHeight: 64`, `width: '100%'`, `flexShrink: 0`. |
+| `Flex` + `UNSAFE_style` (gaps) | `<div>` + `style()` | `display: 'flex'`, `alignItems: 'center'`, `columnGap` / `rowGap` from layout constants. |
+| `Heading` + `margin={0}` | `Heading` + `styles={style({ margin: 0 })}` | Level 3 preserved. |
+| `Text` + `UNSAFE_style` subtitle color | `Text` + `styles` with `color: 'neutral-subdued'` | Replaces `var(--spectrum-alias-text-color-neutral-subdued)`. |
+| `ActionButton` + `@spectrum-icons/workflow/{Bell,Feedback,More}` | `ActionButton` + `@react-spectrum/s2/icons/<Name>` | Default imports; icon nodes use **`styles={iconStyle({ size: 'M' })}`**. |
+| Nested `Provider` + `defaultTheme` + `colorScheme="light"` around actions | Omitted | Root S2 `Provider` in `App.tsx` supplies theme; actions row uses `backgroundColor: 'white'` in `style()` where RS1 used static white. |
+| `Avatar` `size={32}` | `Avatar` `size={32}` | Unchanged. |
+
 ### S2 `style()` macro: padding and shell edges (critical)
 
 The Spectrum 2 theme for `style()` defines **logical** padding via shorthand keys that expand to real CSS (`padding-inline-*`, `padding-block-*`). **Invalid keys are ignored at build time**—there is often **no TypeScript error**, so chrome can render **flush to the viewport edges** while the source still “looks” correct.
