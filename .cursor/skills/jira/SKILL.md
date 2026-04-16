@@ -1,7 +1,7 @@
 ---
 name: jira
 description: >-
-  Atlassian Jira for this repo: issue keys (e.g. KAN-71, PROJECT-123), tickets, board status,
+  Atlassian Jira for this repo: issue keys, tickets, board status,
   workflow transitions (In Progress, In Review, Under Review), linking PRs to issues, JQL search,
   assignee, sprint, GitHub branch names with issue keys, and Atlassian MCP (cloudId,
   searchJiraIssuesUsingJql, transitionJiraIssue, getJiraIssue, createJiraIssue). After implementing
