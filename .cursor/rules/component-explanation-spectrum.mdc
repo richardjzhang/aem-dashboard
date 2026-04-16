@@ -1,0 +1,38 @@
+---
+description: When explaining UI components, describe behavior and Spectrum 1 vs 2 from imports
+globs: src/**/*.tsx
+alwaysApply: false
+---
+
+# Explaining components and Spectrum usage
+
+When the user asks how a **component** (or tree of components) works, answer in two layers: **behavior** and **design-system lineage**.
+
+## 1. How to tell Spectrum 1 vs 2
+
+Use the file’s **import statements** as ground truth (not folder names or filenames).
+
+| Import prefix | Generation | Notes |
+|---------------|------------|--------|
+| `@react-spectrum/s2` | **Spectrum 2** | Current default for new/changed UI; often paired with `style` from `@react-spectrum/s2/style` (macro). |
+| `@adobe/react-spectrum` | **Spectrum 1** | Legacy; prefer migrating touched code to S2 per `spectrum-2-design-system.mdc`. |
+
+- A single file may import **only S2**, **only S1**, or **both** (e.g. shell mixing chrome). Say explicitly which applies to the component you are describing.
+- App-wide S2 setup lives in `src/main.tsx` (e.g. `page.css`) and `src/App.tsx` (`Provider`). That does not by itself make every child file S2—still check that file’s imports.
+
+## 2. What “how it works” should cover
+
+1. **Role**: What screen or layout region it owns; what it renders or delegates.
+2. **Data and control flow**: Props, local state, callbacks, and where data comes from (parent, router, static `src/data/`, etc.).
+3. **Composition**: Notable children, dialogs, or routes; point to **file paths** and use **code citations** for the most important snippets.
+4. **Spectrum**: One short sentence naming **S1, S2, or mixed**, and the relevant import lines if helpful.
+
+## 3. Repo context
+
+For stack, routes, and the v1/v2 split overview, use `codebase-onboarding-map.mdc`. For **new or edited** UI policy, use `spectrum-2-design-system.mdc`.
+
+## Example (answer shape)
+
+> `Sidebar.tsx` is **Spectrum 1**: it imports `…` from `@adobe/react-spectrum`. It [behavior summary]. It is composed/used from [parent file]. New work in this file should move toward `@react-spectrum/s2` when touched.
+
+Keep explanations proportional to the question; do not assume a single Spectrum version across the whole app.
