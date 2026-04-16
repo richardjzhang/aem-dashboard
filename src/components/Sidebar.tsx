@@ -1,85 +1,114 @@
 import {
-  Provider,
-  defaultTheme,
-  Item,
-  LabeledValue,
   Link,
   ListView,
+  ListViewItem,
+  Provider,
   Text,
-  View,
-} from '@adobe/react-spectrum';
+} from '@react-spectrum/s2';
+import { style } from '@react-spectrum/s2/style' with { type: 'macro' };
+
+const navShell = style({
+  width: 248,
+  height: 'full',
+  minHeight: 0,
+  flexShrink: 0,
+  overflow: 'hidden',
+  backgroundColor: 'gray-75',
+  borderEndWidth: 1,
+  borderEndColor: 'gray-200',
+  borderStyle: 'solid',
+  display: 'flex',
+  flexDirection: 'column',
+});
+
+const scrollColumn = style({
+  paddingTop: 20,
+  paddingBottom: 16,
+  height: 'full',
+  minHeight: 0,
+  overflow: 'auto',
+  display: 'flex',
+  flexDirection: 'column',
+});
+
+const environmentBlock = style({
+  paddingX: 16,
+  paddingBottom: 20,
+});
+
+const labeledColumn = style({
+  display: 'flex',
+  flexDirection: 'column',
+  width: 'full',
+  alignItems: 'stretch',
+});
+
+const listSection = style({
+  paddingX: 8,
+  flexGrow: 1,
+  minHeight: 0,
+  display: 'flex',
+  flexDirection: 'column',
+});
+
+const listViewLayout = style({
+  flexGrow: 1,
+  minHeight: 0,
+  width: 'full',
+});
+
+const environmentLabel = style({
+  font: 'ui-sm',
+  color: 'neutral-subdued',
+});
+
 function NavItemContent(props: { label: string }) {
-  return (
-    <Text>{props.label}</Text>
-  );
+  return <Text slot="label">{props.label}</Text>;
 }
 
 export default function Sidebar() {
   return (
-    <Provider theme={defaultTheme} colorScheme="dark">
-      <View
-        elementType="nav"
-        width={248}
-        height="100%"
-        minHeight={0}
-        flexShrink={0}
-        overflow="hidden"
-        backgroundColor="gray-75"
-        borderEndWidth="thin"
-        borderEndColor="gray-200"
-      >
-        <View
-          paddingTop="size-250"
-          paddingBottom="size-200"
-          height="100%"
-          minHeight={0}
-          overflow="auto"
-          UNSAFE_style={{ display: 'flex', flexDirection: 'column' }}
-        >
-          <View paddingX="size-200" paddingBottom="size-250">
-            <LabeledValue
-              label="Environment"
-              width="100%"
-              value={
-                <Link isQuiet onPress={() => {}}>
-                  Production
-                </Link>
-              }
-            />
-          </View>
+    <Provider colorScheme="dark">
+      <nav className={navShell}>
+        <div className={scrollColumn}>
+          <div className={environmentBlock}>
+            <div className={labeledColumn}>
+              <Text styles={environmentLabel}>Environment</Text>
+              <Link href="#" isQuiet isStandalone staticColor="white" onPress={() => {}}>
+                Production
+              </Link>
+            </div>
+          </div>
 
-          <View paddingX="size-100" flexGrow={1} minHeight={0} UNSAFE_style={{ display: 'flex', flexDirection: 'column' }}>
+          <div className={listSection}>
             <ListView
               aria-label="Application navigation"
               selectionMode="single"
-              defaultSelectedKeys={['assets']}
+              defaultSelectedKeys={new Set(['assets'])}
               selectionStyle="highlight"
-              density="compact"
               isQuiet
-              flexGrow={1}
-              minHeight={0}
-              width="100%"
               overflowMode="truncate"
+              styles={listViewLayout}
             >
-              <Item key="home" textValue="Home">
+              <ListViewItem id="home" textValue="Home">
                 <NavItemContent label="Home" />
-              </Item>
-              <Item key="assets" textValue="Assets">
+              </ListViewItem>
+              <ListViewItem id="assets" textValue="Assets">
                 <NavItemContent label="Assets" />
-              </Item>
-              <Item key="collections" textValue="Collections">
+              </ListViewItem>
+              <ListViewItem id="collections" textValue="Collections">
                 <NavItemContent label="Collections" />
-              </Item>
-              <Item key="insights" textValue="Insights">
+              </ListViewItem>
+              <ListViewItem id="insights" textValue="Insights">
                 <NavItemContent label="Insights" />
-              </Item>
-              <Item key="content-hub" textValue="Content Hub">
+              </ListViewItem>
+              <ListViewItem id="content-hub" textValue="Content Hub">
                 <NavItemContent label="Content Hub" />
-              </Item>
+              </ListViewItem>
             </ListView>
-          </View>
-        </View>
-      </View>
+          </div>
+        </div>
+      </nav>
     </Provider>
   );
 }
