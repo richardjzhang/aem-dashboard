@@ -65,6 +65,20 @@ Write this down mentally (or in the migration summary): *this subtree is **dark 
 
 For **dark sidebar + light text**, the working pattern is: **`Provider colorScheme="dark"`** as the **outermost** wrapper for the sidebar export, **`<nav>`** with `backgroundColor: 'layer-1'` and a dark-appropriate `borderEndColor`, **`ListView` + `ListViewItem`** with row labels via **`Text`** using explicit **`color: 'neutral'`** (or equivalent), environment label **`neutral-subdued`**, Production **`Link`** with **`staticColor="white"`**. See **`src/components/Sidebar.tsx`** in-repo.
 
+### Sidebar `ListView` in a fixed rail: avoid horizontal scroll (required)
+
+S2 **`ListView`** renders a React Aria **`GridList`**. Inside a **narrow flex column** (sidebar rail), the list can measure **wider than the available width**. An ancestor with **`overflow: 'auto'`** then shows a **horizontal** scrollbar (or a scrollable overflow region) even when rows are short—this is a common regression after RS1 → S2 migration.
+
+**Do not ship** a sidebar whose vertical scroll container uses only `overflow: 'auto'` without clipping the inline axis.
+
+1. **Cause:** Flex items default to **`min-width: auto`**, so children refuse to shrink below intrinsic width; the grid can extend past the rail.
+2. **Apply on `style()` wrappers and `ListView` `styles` (match `Sidebar.tsx`):**
+   - **`minWidth: 0`** on the **scroll column**, **list section** wrapper, **`ListView` `styles`**, and the environment block column—every flex descendant between the rail and the grid.
+   - **`maxWidth: 'full'`** on the list section and `ListView` styles when needed so width tracks the rail.
+   - On the **vertical** scroll container (the inner column that should scroll): use **`overflowX: 'hidden'`** and **`overflowY: 'auto'`** — **not** a single `overflow: 'auto'`, which exposes horizontal scroll when the grid is a few px too wide.
+   - On the **list section** wrapper (flex child wrapping `ListView`): **`overflow: 'hidden'`** helps clip any residual overflow from the collection.
+3. **Verify:** After migrating, open DevTools on the sidebar scroll container and confirm **no horizontal scrollbar**; selection/focus outlines should not imply extra scroll width beyond the nav.
+
 ## Spectrum 2 correctness checklist (apply to every migrated component)
 
 - **Entry CSS**: `@react-spectrum/s2/page.css` imported once at the app entry (do not duplicate without reason).
@@ -142,10 +156,10 @@ Use these tables **before** grepping the repo for the same RS1 patterns in other
 |------------------------------|---------------------------|--------|
 | `Provider` + `defaultTheme` + `colorScheme="dark"` | `Provider` + `colorScheme="dark"` **wrapping the full sidebar** (including `<nav>`) | Nested dark chrome under root S2 `Provider` (`App.tsx`); do not import RS1 `defaultTheme`. **Do not** put only the inner column inside `Provider`—the `<nav>` shell must be inside the dark `Provider` so `style()` resolves for dark surfaces (see **Color scheme and surfaces**). |
 | `View` (nav shell) | `<nav>` + `style()` | `width: 248`, `height: 'full'`, `minHeight: 0`, `flexShrink: 0`, `overflow: 'hidden'`, **`backgroundColor: 'layer-1'`** (dark semantic surface), `borderEndWidth: 1`, **`borderEndColor: 'gray-800'`** (visible on dark), `borderStyle: 'solid'`. Avoid **`gray-75`** on the outer nav if it sits outside a dark `Provider`—it stays a **light** gray. |
-| `View` (scroll column) | `<div>` + `style()` | Column flex; `paddingTop: 20`, `paddingBottom: 12` ↔ RS1 `size-250` / `size-200`. |
+| `View` (scroll column) | `<div>` + `style()` | Column flex; `paddingTop: 20`, `paddingBottom: 12` ↔ RS1 `size-250` / `size-200`. Add **`minWidth: 0`**, **`overflowX: 'hidden'`**, **`overflowY: 'auto'`** (see **Sidebar `ListView` in a fixed rail**)—do **not** use only `overflow: 'auto'` here. |
 | `View` (environment block) | `<div>` + `style()` | `paddingX: 12`, `paddingBottom: 20` ↔ RS1 `size-200` / `size-250` horizontal and bottom spacing. |
 | `LabeledValue` | Stack: `Text` + `Link` in `div` + `style()` | Label: `Text` with `font: 'ui-sm'`, `color: 'neutral-subdued'`. `Link`: `isQuiet`, `isStandalone`, `staticColor="white"`, `onPress`. |
-| `ListView` + `Item` | `ListView` + `ListViewItem` | `defaultSelectedKeys={new Set(['assets'])}` (S2 `Set`, not RS1 array). Row: `ListViewItem` with `id` + `textValue`; primary label via **`Text`** with **`styles`** including **`color: 'neutral'`** (light text on dark sidebar). Confirm slot/children pattern against installed S2 types (`slot="label"` if required by version). |
+| `ListView` + `Item` | `ListView` + `ListViewItem` | `defaultSelectedKeys={new Set(['assets'])}` (S2 `Set`, not RS1 array). Row: `ListViewItem` with `id` + `textValue`; primary label via **`Text`** with **`styles`** including **`color: 'neutral'`** (light text on dark sidebar). Confirm slot/children pattern against installed S2 types (`slot="label"` if required by version). **`ListView` `styles`**: include **`minWidth: 0`**, **`maxWidth: 'full'`**; parent flex wrappers **`minWidth: 0`** — see **Sidebar `ListView` in a fixed rail**. |
 | `Item` `key="…"` | `ListViewItem id="…"` | Stable string ids match former keys. |
 | RS1 `density="compact"` on `ListView` | (no direct prop) | S2 row height follows defaults; adjust wrapper/`styles` only if parity with RS1 compact density is required. |
 
@@ -186,7 +200,7 @@ The Spectrum 2 theme for `style()` defines **logical** padding via shorthand key
 4. For each conceptual control (button, text field, dialog, etc.), choose the **S2 component** and props from types/docs—not from RS1 memory—then map **layout and visual props** so the rendered result matches the baseline (same outer dimensions, internal spacing, and color relationships).
 5. Rewrite JSX and event/callback shapes to match S2 (controlled vs uncontrolled, slots, labels, etc.).
 6. **Reconcile visuals**: compare migrated markup to the baseline list; adjust S2 layout components, gaps, padding, backgrounds, and typography-related props until the UI matches RS1 **as closely as the platform allows**. Do not “modernize” spacing or colors unless the user asked for a redesign.
-7. For app-shell and navigation surfaces, pay special attention to mixed styling responsibilities that often control visual parity: root/background tokens, surface fills, border separators, **horizontal/vertical padding on the outer flex row (use `paddingX` / `paddingY` in `style()`—see “S2 `style()` macro: padding and shell edges”)**, icon sizing, quiet vs emphasized controls, avatar sizing, and parent flex behavior. Preserve these behaviors even if they come from a combination of CSS classes, CSS variables, and Spectrum props.
+7. For app-shell and navigation surfaces, pay special attention to mixed styling responsibilities that often control visual parity: root/background tokens, surface fills, border separators, **horizontal/vertical padding on the outer flex row (use `paddingX` / `paddingY` in `style()`—see “S2 `style()` macro: padding and shell edges”)**, icon sizing, quiet vs emphasized controls, avatar sizing, and parent flex behavior. Preserve these behaviors even if they come from a combination of CSS classes, CSS variables, and Spectrum props. For **sidebar `ListView`**, apply **“Sidebar `ListView` in a fixed rail: avoid horizontal scroll”** and confirm no horizontal scrollbar on the nav scroll container.
 8. Run **`tsc` / IDE diagnostics** on changed files; resolve all errors introduced by the migration.
 9. **Verify `package.json`**: `@adobe/react-spectrum` still present. If S2 was missing, add `@react-spectrum/s2` (and macro-related devDependencies only if the build requires them and the repo pattern expects it).
 10. **Jira sync when work came from Jira:** If this migration was **spawned from or maps to a Jira issue** (explicit issue key like `PROJECT-123`, reference in branch/PR title, or the user stated the ticket), **always** align Jira with reality using the **Jira skill** — load **`.cursor/skills/jira/SKILL.md`** and apply its non‑negotiable rules. Read and follow the referenced instructions verbatim. **Do not** open a GitHub pull request unless the user **explicitly** asked for one (see **`.cursor/rules/pr-only-when-asked.mdc`**).
