@@ -7,7 +7,7 @@
   removes @adobe/react-spectrum from package.json—only updates application code
   and adds S2 deps if missing.
 name: spectrum-1-to-2-migrator
-model: composer-2-fast
+model: inherit
 description: >-
 ---
 
